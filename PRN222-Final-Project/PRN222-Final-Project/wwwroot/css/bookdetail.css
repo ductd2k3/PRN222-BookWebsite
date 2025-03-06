@@ -1,0 +1,97 @@
+﻿/* Product Detail */
+.product-detail-card {
+    background: var(--light-bg);
+    border-radius: 15px;
+    box-shadow: var(--shadow-neon);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.product-detail-img {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.rating-stars {
+    color: #FFD700;
+    margin-bottom: 1rem;
+}
+
+.btn-buy {
+    background: var(--neon-orange);
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: var(--shadow-neon);
+}
+
+    .btn-buy:hover {
+        background: #F97316;
+        transform: scale(1.05);
+    }
+
+.btn-outline {
+    border: 2px solid var(--neon-orange);
+    color: var(--neon-orange);
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+    .btn-outline:hover {
+        background: var(--neon-orange);
+        color: white;
+    }
+
+/* Related Products - Sử dụng lại từ index */
+.book-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-neon);
+    transition: all 0.3s;
+    background: var(--light-bg);
+    position: relative;
+}
+
+    .book-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 15px;
+        border: 2px solid transparent;
+        background: var(--card-border);
+        -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: destination-out;
+        mask-composite: exclude;
+    }
+
+    .book-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(107, 33, 168, 0.3);
+    }
+
+    .book-card img {
+        height: 250px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .book-card .card-body {
+        padding: 1.5rem;
+    }
+
+.book-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
