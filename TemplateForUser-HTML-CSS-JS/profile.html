@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ Người Dùng - Hiệu Sách Tương Lai</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #1E3A8A, #6B21A8);
+            --neon-orange: #FF5733;
+            --light-bg: #FFFFFF;
+            --shadow-neon: 0 0 20px rgba(107, 33, 168, 0.5);
+            --text-color: #F1F5F9;
+            --card-border: linear-gradient(135deg, #3B82F6, #A855F7);
+        }
+
+        body {
+            background: linear-gradient(to bottom, var(--light-bg), #E0E7FF);
+            font-family: 'Poppins', sans-serif;
+            color: #1F2937;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--primary-gradient);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-neon);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color) !important;
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            color: var(--neon-orange) !important;
+        }
+
+        .cart-icon .cart-badge {
+            background: var(--neon-orange);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            position: absolute;
+            top: -5px;
+            right: -10px;
+        }
+
+        /* Profile Section */
+        .profile-container {
+            background: var(--light-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow-neon);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-info-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-info-item label {
+            font-weight: 600;
+            color: #6B7280;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-info-item p {
+            margin: 0;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            display: none; /* Ẩn input khi không chỉnh sửa */
+        }
+
+        .form-input:focus {
+            border-color: var(--neon-orange);
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 87, 51, 0.5);
+        }
+
+        .btn-edit, .btn-save {
+            background: var(--neon-orange);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-neon);
+        }
+
+        .btn-edit:hover, .btn-save:hover {
+            background: #F97316;
+            transform: scale(1.05);
+        }
+
+        .btn-save {
+            display: none; /* Ẩn nút Lưu khi không chỉnh sửa */
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-gradient);
+            padding: 3rem 0;
+            color: var(--text-color);
+        }
+
+        footer a {
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--neon-orange);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">Hiệu Sách 4.0</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Sách Mới</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Bán Chạy</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Giảm Giá</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link cart-icon" href="#">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge">2</span>
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Section -->
+    <div class="container profile-container">
+        <div class="profile-header">
+            <h2>Hồ Sơ Người Dùng</h2>
+            <button class="btn-edit">Chỉnh Sửa</button>
+            <button class="btn-save">Lưu</button>
+        </div>
+        <div class="profile-info">
+            <div class="profile-info-item">
+                <label>Họ và tên:</label>
+                <p id="name">Nguyễn Văn A</p>
+                <input type="text" class="form-input" id="nameInput" value="Nguyễn Văn A">
+            </div>
+            <div class="profile-info-item">
+                <label>Email:</label>
+                <p id="email">nguyenvana@example.com</p>
+                <input type="email" class="form-input" id="emailInput" value="nguyenvana@example.com">
+            </div>
+            <div class="profile-info-item">
+                <label>Số điện thoại:</label>
+                <p id="phone">0123-456-789</p>
+                <input type="text" class="form-input" id="phoneInput" value="0123-456-789">
+            </div>
+            <div class="profile-info-item">
+                <label>Địa chỉ:</label>
+                <p id="address">123 Đường Sách, Quận 1, TP. Hồ Chí Minh</p>
+                <input type="text" class="form-input" id="addressInput" value="123 Đường Sách, Quận 1, TP. Hồ Chí Minh">
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Liên Hệ</h5>
+                    <p>Email: contact@hieusach.com</p>
+                    <p>Phone: 0123-456-789</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Chính Sách</h5>
+                    <a href="#">Bảo Mật</a><br>
+                    <a href="#">Điều Khoản</a>
+                </div>
+                <div class="col-md-4">
+                    <h5>Theo Dõi</h5>
+                    <a href="#" class="me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // Xử lý chỉnh sửa hồ sơ
+        const editBtn = document.querySelector('.btn-edit');
+        const saveBtn = document.querySelector('.btn-save');
+        const infoItems = document.querySelectorAll('.profile-info-item');
+
+        editBtn.addEventListener('click', function() {
+            infoItems.forEach(item => {
+                const p = item.querySelector('p');
+                const input = item.querySelector('.form-input');
+                p.style.display = 'none';
+                input.style.display = 'block';
+            });
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline-block';
+        });
+
+        saveBtn.addEventListener('click', function() {
+            infoItems.forEach(item => {
+                const p = item.querySelector('p');
+                const input = item.querySelector('.form-input');
+                p.textContent = input.value;
+                p.style.display = 'block';
+                input.style.display = 'none';
+            });
+            editBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

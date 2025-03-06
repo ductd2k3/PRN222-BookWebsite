@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Sử Đơn Hàng - Hiệu Sách Tương Lai</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #1E3A8A, #6B21A8);
+            --neon-orange: #FF5733;
+            --light-bg: #FFFFFF;
+            --shadow-neon: 0 0 20px rgba(107, 33, 168, 0.5);
+            --text-color: #F1F5F9;
+            --card-border: linear-gradient(135deg, #3B82F6, #A855F7);
+        }
+
+        body {
+            background: linear-gradient(to bottom, var(--light-bg), #E0E7FF);
+            font-family: 'Poppins', sans-serif;
+            color: #1F2937;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--primary-gradient);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-neon);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color) !important;
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            color: var(--neon-orange) !important;
+        }
+
+        .cart-icon .cart-badge {
+            background: var(--neon-orange);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            position: absolute;
+            top: -5px;
+            right: -10px;
+        }
+
+        /* Order History Section */
+        .order-history-container {
+            background: var(--light-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow-neon);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .order-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-info {
+            flex-grow: 1;
+        }
+
+        .order-id {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-date-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .order-date {
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .order-total {
+            color: #16A34A;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .order-status.pending {
+            background: #FBBF24;
+            color: white;
+        }
+
+        .order-status.completed {
+            background: #16A34A;
+            color: white;
+        }
+
+        .order-status.cancelled {
+            background: #EF4444;
+            color: white;
+        }
+
+        .btn-details {
+            background: var(--neon-orange);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-neon);
+        }
+
+        .btn-details:hover {
+            background: #F97316;
+            transform: scale(1.05);
+        }
+
+        /* Filter */
+        .filter-container {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #D1D5DB;
+            font-size: 1rem;
+            color: #1F2937;
+            background: white;
+            transition: border-color 0.3s;
+            width: 200px;
+        }
+
+        .filter-select:focus {
+            border-color: var(--neon-orange);
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 87, 51, 0.5);
+        }
+
+        /* Pagination */
+        .pagination {
+            justify-content: center;
+            margin-top: 1rem; /* Giảm margin để gần danh sách hơn */
+        }
+
+        .page-link {
+            color: var(--neon-orange);
+            border: 1px solid var(--neon-orange);
+            transition: all 0.3s;
+        }
+
+        .page-link:hover {
+            background: var(--neon-orange);
+            color: white;
+            border-color: var(--neon-orange);
+        }
+
+        .page-item.active .page-link {
+            background: var(--neon-orange);
+            border-color: var(--neon-orange);
+            color: white;
+        }
+
+        /* Support Info */
+        .support-info {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #E5E7EB;
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+
+        .support-info a {
+            color: var(--neon-orange);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .support-info a:hover {
+            color: #F97316;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-gradient);
+            padding: 3rem 0;
+            color: var(--text-color);
+        }
+
+        footer a {
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--neon-orange);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">Hiệu Sách 4.0</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Sách Mới</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Bán Chạy</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Giảm Giá</a></li>
+                </ul>
+                <form class="d-flex me-3">
+                    <input class="form-control me-2" type="search" placeholder="Tìm sách..." aria-label="Search">
+                    <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button>
+                </form>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link cart-icon" href="#">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge">2</span>
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Order History Section -->
+    <div class="container order-history-container">
+        <h2 class="text-center mb-4">Lịch Sử Đơn Hàng</h2>
+        <!-- Filter -->
+        <div class="filter-container">
+            <select class="filter-select" id="statusFilter">
+                <option value="all">Tất cả trạng thái</option>
+                <option value="completed">Đã giao</option>
+                <option value="pending">Đang xử lý</option>
+                <option value="cancelled">Đã hủy</option>
+            </select>
+        </div>
+        <div class="order-items">
+            <!-- Order Item 1 -->
+            <div class="order-item" data-status="completed">
+                <div class="order-info">
+                    <p class="order-id">Đơn hàng #DH001</p>
+                    <div class="order-date-status">
+                        <p class="order-date">Ngày đặt: 01/03/2025</p>
+                        <span class="order-status completed">Đã giao</span>
+                    </div>
+                    <p class="order-total">610.000đ</p>
+                </div>
+                <button class="btn-details">Xem chi tiết</button>
+            </div>
+            <!-- Order Item 2 -->
+            <div class="order-item" data-status="pending">
+                <div class="order-info">
+                    <p class="order-id">Đơn hàng #DH002</p>
+                    <div class="order-date-status">
+                        <p class="order-date">Ngày đặt: 28/02/2025</p>
+                        <span class="order-status pending">Đang xử lý</span>
+                    </div>
+                    <p class="order-total">450.000đ</p>
+                </div>
+                <button class="btn-details">Xem chi tiết</button>
+            </div>
+            <!-- Order Item 3 -->
+            <div class="order-item" data-status="cancelled">
+                <div class="order-info">
+                    <p class="order-id">Đơn hàng #DH003</p>
+                    <div class="order-date-status">
+                        <p class="order-date">Ngày đặt: 25/02/2025</p>
+                        <span class="order-status cancelled">Đã hủy</span>
+                    </div>
+                    <p class="order-total">300.000đ</p>
+                </div>
+                <button class="btn-details">Xem chi tiết</button>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Order History Pagination">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">«</span>
+                    </a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">»</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Support Info -->
+        <div class="support-info">
+            <p>Cần hỗ trợ? Liên hệ chúng tôi qua <a href="mailto:contact@hieusach.com">contact@hieusach.com</a> hoặc gọi <a href="tel:0123456789">0123-456-789</a>.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Liên Hệ</h5>
+                    <p>Email: contact@hieusach.com</p>
+                    <p>Phone: 0123-456-789</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Chính Sách</h5>
+                    <a href="#">Bảo Mật</a><br>
+                    <a href="#">Điều Khoản</a>
+                </div>
+                <div class="col-md-4">
+                    <h5>Theo Dõi</h5>
+                    <a href="#" class="me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // Xử lý lọc theo trạng thái
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            const selectedStatus = this.value;
+            const orderItems = document.querySelectorAll('.order-item');
+
+            orderItems.forEach(item => {
+                const itemStatus = item.getAttribute('data-status');
+                if (selectedStatus === 'all' || itemStatus === selectedStatus) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

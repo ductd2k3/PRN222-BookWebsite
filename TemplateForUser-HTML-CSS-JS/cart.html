@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng - Hiệu Sách Tương Lai</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #1E3A8A, #6B21A8);
+            --neon-orange: #FF5733;
+            --light-bg: #FFFFFF;
+            --shadow-neon: 0 0 20px rgba(107, 33, 168, 0.5);
+            --text-color: #F1F5F9;
+            --card-border: linear-gradient(135deg, #3B82F6, #A855F7);
+        }
+
+        body {
+            background: linear-gradient(to bottom, var(--light-bg), #E0E7FF);
+            font-family: 'Poppins', sans-serif;
+            color: #1F2937;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--primary-gradient);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-neon);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color) !important;
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            color: var(--neon-orange) !important;
+        }
+
+        .cart-icon .cart-badge {
+            background: var(--neon-orange);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            position: absolute;
+            top: -5px;
+            right: -10px;
+        }
+
+        /* Cart Section */
+        .cart-container {
+            background: var(--light-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow-neon);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 1.5rem;
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-price {
+            color: #16A34A;
+            font-weight: 600;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-control button {
+            background: var(--neon-orange);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quantity-control button:hover {
+            background: #F97316;
+        }
+
+        .quantity-control input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #D1D5DB;
+            border-radius: 5px;
+            padding: 0.25rem;
+        }
+
+        .remove-item {
+            color: #EF4444;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .remove-item:hover {
+            color: #DC2626;
+        }
+
+        /* Pagination */
+        .pagination {
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .page-link {
+            color: var(--neon-orange);
+            border: 1px solid var(--neon-orange);
+            transition: all 0.3s;
+        }
+
+        .page-link:hover {
+            background: var(--neon-orange);
+            color: white;
+            border-color: var(--neon-orange);
+        }
+
+        .page-item.active .page-link {
+            background: var(--neon-orange);
+            border-color: var(--neon-orange);
+            color: white;
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            background: var(--light-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow-neon);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .btn-checkout {
+            background: var(--neon-orange);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-neon);
+            width: 100%;
+        }
+
+        .btn-checkout:hover {
+            background: #F97316;
+            transform: scale(1.05);
+        }
+
+        .address-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.3s;
+        }
+
+        .address-input:focus {
+            border-color: var(--neon-orange);
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 87, 51, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-gradient);
+            padding: 3rem 0;
+            color: var(--text-color);
+        }
+
+        footer a {
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--neon-orange);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">Hiệu Sách 4.0</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Sách Mới</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Bán Chạy</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Giảm Giá</a></li>
+                </ul>
+                <form class="d-flex me-3">
+                    <input class="form-control me-2" type="search" placeholder="Tìm sách..." aria-label="Search">
+                    <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button>
+                </form>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link cart-icon" href="#">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge">2</span>
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Section -->
+    <div class="container cart-container">
+        <h2 class="text-center mb-4">Giỏ Hàng Của Bạn</h2>
+        <div class="cart-items">
+            <!-- Cart Item 1 -->
+            <div class="cart-item">
+                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794" alt="Book 1">
+                <div class="cart-item-info">
+                    <h5 class="cart-item-title">Cuốn Sách Tương Lai</h5>
+                    <p class="cart-item-price">150.000đ</p>
+                </div>
+                <div class="quantity-control">
+                    <button>-</button>
+                    <input type="number" value="1" min="1">
+                    <button>+</button>
+                </div>
+                <div class="remove-item ms-3">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+            </div>
+            <!-- Cart Item 2 -->
+            <div class="cart-item">
+                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f" alt="Book 2">
+                <div class="cart-item-info">
+                    <h5 class="cart-item-title">Hành Trình Vũ Trụ</h5>
+                    <p class="cart-item-price">250.000đ</p>
+                </div>
+                <div class="quantity-control">
+                    <button>-</button>
+                    <input type="number" value="2" min="1">
+                    <button>+</button>
+                </div>
+                <div class="remove-item ms-3">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+            </div>
+            <!-- Cart Item 3 -->
+            <div class="cart-item">
+                <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e" alt="Book 3">
+                <div class="cart-item-info">
+                    <h5 class="cart-item-title">Tiểu Thuyết 2049</h5>
+                    <p class="cart-item-price">180.000đ</p>
+                </div>
+                <div class="quantity-control">
+                    <button>-</button>
+                    <input type="number" value="1" min="1">
+                    <button>+</button>
+                </div>
+                <div class="remove-item ms-3">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Cart Pagination">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">«</span>
+                    </a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">»</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Cart Summary -->
+    <div class="container cart-summary">
+        <h3 class="mb-3">Tổng Quan Đơn Hàng</h3>
+        <div class="d-flex justify-content-between mb-2">
+            <span>Tạm tính (3 sản phẩm):</span>
+            <span class="fw-bold">580.000đ</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+            <span>Phí vận chuyển:</span>
+            <span class="fw-bold">30.000đ</span>
+        </div>
+        <div class="d-flex justify-content-between mb-3">
+            <span>Tổng cộng:</span>
+            <span class="fw-bold text-success fs-4">610.000đ</span>
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label fw-bold">Địa chỉ giao hàng:</label>
+            <input type="text" class="address-input" id="address" placeholder="Nhập địa chỉ giao hàng...">
+        </div>
+        <button class="btn-checkout">Thanh Toán</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Liên Hệ</h5>
+                    <p>Email: contact@hieusach.com</p>
+                    <p>Phone: 0123-456-789</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Chính Sách</h5>
+                    <a href="#">Bảo Mật</a><br>
+                    <a href="#">Điều Khoản</a>
+                </div>
+                <div class="col-md-4">
+                    <h5>Theo Dõi</h5>
+                    <a href="#" class="me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // Xử lý tăng giảm số lượng (giả lập)
+        document.querySelectorAll('.quantity-control button').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('input');
+                let value = parseInt(input.value);
+                if (this.textContent === '+') {
+                    input.value = value + 1;
+                } else if (value > 1) {
+                    input.value = value - 1;
+                }
+                updateCartSummary(); // Cập nhật tổng tiền
+            });
+        });
+
+        // Xử lý xóa sản phẩm (giả lập)
+        document.querySelectorAll('.remove-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.closest('.cart-item').remove();
+                updateCartSummary(); // Cập nhật tổng tiền
+            });
+        });
+
+        // Hàm cập nhật tổng tiền (giả lập)
+        function updateCartSummary() {
+            const items = document.querySelectorAll('.cart-item');
+            let subtotal = 0;
+            items.forEach(item => {
+                const price = parseInt(item.querySelector('.cart-item-price').textContent.replace('đ', '').replace('.', ''));
+                const quantity = parseInt(item.querySelector('.quantity-control input').value);
+                subtotal += price * quantity;
+            });
+            const shipping = 30000; // Phí vận chuyển giả định
+            const total = subtotal + shipping;
+
+            document.querySelector('.cart-summary .d-flex:nth-child(1) span:first-child').textContent = `Tạm tính (${items.length} sản phẩm):`;
+            document.querySelector('.cart-summary .d-flex:nth-child(1) .fw-bold').textContent = `${subtotal.toLocaleString('vi-VN')}đ`;
+            document.querySelector('.cart-summary .d-flex:nth-child(3) .fw-bold').textContent = `${total.toLocaleString('vi-VN')}đ`;
+        }
+    </script>
+</body>
+</html>
