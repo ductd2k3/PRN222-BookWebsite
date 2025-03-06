@@ -1,0 +1,87 @@
+﻿@page
+@model PRN222_Final_Project.Pages.Customer.BookDetailModel
+@{
+}
+<head>
+    <link rel="stylesheet" href="~/css/bookdetail.css" asp-append-version="true" />
+</head>
+<!-- Product Detail Section -->
+<!-- Product Detail Section -->
+<div class="container product-detail-card">
+    <div class="row">
+        <div class="col-md-5">
+            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794" class="product-detail-img" alt="Product Image">
+        </div>
+        <div class="col-md-7">
+            <h1 class="mb-2">Cuốn Sách Tương Lai</h1>
+            <p class="text-muted mb-1">Tác giả: Nhà Văn X</p>
+            <div class="rating-stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="far fa-star"></i>
+                <span class="ms-2 text-muted">(4.2/5 - 150 đánh giá)</span>
+            </div>
+            <p class="text-success fw-bold fs-3">150.000đ <span class="text-muted text-decoration-line-through fs-5">200.000đ</span></p>
+            <p class="mt-3"><strong>Thể loại:</strong> Khoa học viễn tưởng</p>
+            <p><strong>Số trang:</strong> 320</p>
+            <p><strong>Mô tả:</strong> Cuốn sách này đưa bạn vào một hành trình khám phá tương lai, nơi công nghệ và con người hòa quyện. Với lối viết lôi cuốn và những ý tưởng táo bạo, đây là một tác phẩm không thể bỏ qua.</p>
+            <div class="d-flex gap-3 mt-4">
+                <button class="btn btn-buy">Thêm Vào Giỏ Hàng</button>
+                <button class="btn btn-outline">Mua Ngay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Related Products Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">Sản Phẩm Liên Quan</h2>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="col">
+            <div class="book-card">
+                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f" class="card-img-top" alt="Related Product 1">
+                <div class="card-body">
+                    <h5 class="book-title">Hành Trình Vũ Trụ</h5>
+                    <p class="card-text">Tác giả: Khoa Học Gia</p>
+                    <p class="text-success fw-bold">250.000đ <span class="text-muted text-decoration-line-through">300.000đ</span></p>
+                    <button class="btn btn-buy w-100">Thêm Vào Giỏ</button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="book-card">
+                <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e" class="card-img-top" alt="Related Product 2">
+                <div class="card-body">
+                    <h5 class="book-title">Tiểu Thuyết 2049</h5>
+                    <p class="card-text">Tác giả: Nhà Văn Y</p>
+                    <p class="text-success fw-bold">180.000đ <span class="text-muted text-decoration-line-through">220.000đ</span></p>
+                    <button class="btn btn-buy w-100">Thêm Vào Giỏ</button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="book-card">
+                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794" class="card-img-top" alt="Related Product 3">
+                <div class="card-body">
+                    <h5 class="book-title">Kinh Tế 4.0</h5>
+                    <p class="card-text">Tác giả: Chuyên Gia Z</p>
+                    <p class="text-success fw-bold">200.000đ <span class="text-muted text-decoration-line-through">250.000đ</span></p>
+                    <button class="btn btn-buy w-100">Thêm Vào Giỏ</button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="book-card">
+                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f" class="card-img-top" alt="Related Product 4">
+                <div class="card-body">
+                    <h5 class="book-title">Công Nghệ Tương Lai</h5>
+                    <p class="card-text">Tác giả: Kỹ Sư A</p>
+                    <p class="text-success fw-bold">220.000đ <span class="text-muted text-decoration-line-through">280.000đ</span></p>
+                    <button class="btn btn-buy w-100">Thêm Vào Giỏ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
