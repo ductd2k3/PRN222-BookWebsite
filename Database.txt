@@ -10,7 +10,7 @@ GO
 CREATE TABLE Roles (
     RoleID INT PRIMARY KEY IDENTITY(1,1),
     RoleName NVARCHAR(20) UNIQUE NOT NULL,
-    Description NVARCHAR(100)
+    [Description] NVARCHAR(100)
 );
 
 -- Tạo bảng Users
@@ -18,10 +18,10 @@ CREATE TABLE Users (
     UserID INT PRIMARY KEY IDENTITY(1,1),
     RoleID INT,
     Username NVARCHAR(50) UNIQUE NOT NULL,
-    Password NVARCHAR(100) NOT NULL,
+    [Password] NVARCHAR(100) NOT NULL,
     FullName NVARCHAR(100),
     Email NVARCHAR(100) UNIQUE,
-    Address NVARCHAR(200),
+    [Address] NVARCHAR(200),
     CreatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
 );
@@ -39,11 +39,19 @@ CREATE TABLE Products (
     CategoryID INT,
     Title NVARCHAR(100) NOT NULL,
     Author NVARCHAR(100),
-    Price DECIMAL(18,2) NOT NULL,
-    Description NVARCHAR(500),
+    Price DECIMAL(10,2) NOT NULL, -- Giảm từ DECIMAL(18,2) xuống DECIMAL(10,2)
+    [Description] NVARCHAR(500),
     Stock INT DEFAULT 0,
     ImageURL NVARCHAR(200),
+    CONSTRAINT chk_stock CHECK (Stock >= 0), -- Ràng buộc không âm
     FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
+);
+
+-- Tạo bảng OrderStatuses
+CREATE TABLE OrderStatuses (
+    StatusID INT PRIMARY KEY IDENTITY(1,1),
+    StatusName NVARCHAR(20) UNIQUE NOT NULL,
+    [Description] NVARCHAR(100)
 );
 
 -- Tạo bảng Orders
@@ -51,11 +59,12 @@ CREATE TABLE Orders (
     OrderID INT PRIMARY KEY IDENTITY(1,1),
     UserID INT,
     OrderDate DATETIME DEFAULT GETDATE(),
-    TotalAmount DECIMAL(18,2) NOT NULL,
-    Status NVARCHAR(20) DEFAULT 'Chờ xử lý',
+    TotalAmount DECIMAL(10,2) NOT NULL,
+    StatusID INT DEFAULT 1, -- Mặc định là "Chờ xử lý"
     ShippingAddress NVARCHAR(200),
     PaymentMethod NVARCHAR(50),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (StatusID) REFERENCES OrderStatuses(StatusID)
 );
 
 -- Tạo bảng OrderDetails
@@ -64,7 +73,8 @@ CREATE TABLE OrderDetails (
     OrderID INT,
     ProductID INT,
     Quantity INT NOT NULL,
-    UnitPrice DECIMAL(18,2) NOT NULL,
+    UnitPrice DECIMAL(10,2) NOT NULL,
+    CONSTRAINT chk_quantity_orderdetails CHECK (Quantity > 0), -- Ràng buộc Quantity > 0
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
     FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
 );
@@ -76,23 +86,30 @@ CREATE TABLE Carts (
     ProductID INT,
     Quantity INT NOT NULL,
     AddedDate DATETIME DEFAULT GETDATE(),
+    CONSTRAINT chk_quantity_carts CHECK (Quantity > 0), -- Ràng buộc Quantity > 0
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
     FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
 );
 
 -- Thêm dữ liệu mẫu
-INSERT INTO Roles (RoleName, Description)
-VALUES ('Admin', 'Quản trị viên toàn quyền'),
-       ('Customer', 'Khách hàng thông thường');
+-- Roles
+INSERT INTO Roles (RoleName, [Description])
+VALUES 
+    ('Admin', 'Quản trị viên toàn quyền'),
+    ('Customer', 'Khách hàng thông thường'),
+    ('Staff', 'Nhân viên xử lý đơn hàng');
 
-INSERT INTO Users (RoleID, Username, Password, FullName, Email, Address)
-VALUES (1, 'admin', 'admin123', 'Quản trị viên', 'admin@example.com', '123 Đường ABC'),
-       (2, 'user1', 'user123', 'Nguyễn Văn A', 'user1@example.com', '456 Đường XYZ');
+-- Users (PasswordHash giả định đã mã hóa)
+INSERT INTO Users (RoleID, Username, [Password], FullName, Email, [Address])
+VALUES 
+    (1, 'admin', '123', 'Quản trị viên', 'admin@example.com', '123 Đường ABC, Hà Nội'),
+    (2, 'user1', '123', 'Nguyễn Văn A', 'user1@example.com', '456 Đường XYZ, TP.HCM'),
+    (2, 'user2', '123', 'Trần Thị B', 'user2@example.com', '789 Đường DEF, Đà Nẵng'),
+    (3, 'staff1', '123', 'Lê Văn C', 'staff1@example.com', '321 Đường GHI, Hà Nội');
 
-INSERT INTO Categories (CategoryName, Description)
-VALUES ('Văn học', 'Sách văn học Việt Nam và thế giới'),
-       ('Khoa học', 'Sách khoa học phổ thông');
-
-INSERT INTO Products (CategoryID, Title, Author, Price, Description, Stock)
-VALUES (1, 'Dế Mèn Phiêu Lưu Ký', 'Tô Hoài', 50000, 'Tác phẩm văn học thiếu nhi nổi tiếng', 100),
-       (2, 'Vũ Trụ Trong Một Hạt Cát', 'Stephen Hawking', 150000, 'Sách khoa học về vũ trụ', 50);
+-- Categories
+INSERT INTO Categories (CategoryName, [Description])
+VALUES 
+    ('Văn học', 'Sách văn học Việt Nam và thế giới'),
+    ('Khoa học', 'Sách khoa học phổ thông'),
+    ('Thiếu nhi', 'Sách dành cho trẻ em');
