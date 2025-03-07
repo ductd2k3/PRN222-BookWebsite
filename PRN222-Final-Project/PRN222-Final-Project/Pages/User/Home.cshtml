@@ -1,5 +1,5 @@
 ﻿@page
-@model PRN222_Final_Project.Pages.Customer.HomeModel
+@model PRN222_Final_Project.Pages.User.HomeModel
 @{
 }
 <head>
@@ -85,10 +85,10 @@
         <div class="row mb-4">
             <div class="col-md-3">
                 <select class="form-select mb-3">
-                    <option>Thể loại</option>
-                    <option>Tiểu thuyết</option>
-                    <option>Kinh tế</option>
-                    <option>Khoa học</option>
+                    @foreach (var category in @Model.Categories)
+                    {
+                        <option>@(category.CategoryName)</option>
+                    }
                 </select>
             </div>
             <div class="col-md-3">

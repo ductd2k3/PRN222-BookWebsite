@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hiệu Sách Tương Lai</title>
+    <link rel="stylesheet" href="~/css/AdminLayout.css" asp-append-version="true" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+    <style>
+        /* Copy toàn bộ CSS từ mã dashboard */
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a class="navbar-brand" href="/Manager/Admin-Dashboard">Admin - Hiệu Sách</a>
+        <a href="/Manager/Admin-Dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+        <a href="/Manager/Staff-ManageBook"><i class="fas fa-book me-2"></i> Quản Lý Sách</a>
+        <a href="/Admin/Orders"><i class="fas fa-shopping-cart me-2"></i> Quản Lý Đơn Hàng</a>
+        <a href="/Admin/Users"><i class="fas fa-users me-2"></i> Quản Lý Người Dùng</a>
+        <a href="/Logout"><i class="fas fa-sign-out-alt me-2"></i> Đăng Xuất</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        @RenderBody() <!-- Nội dung của từng trang admin sẽ được chèn vào đây -->
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
