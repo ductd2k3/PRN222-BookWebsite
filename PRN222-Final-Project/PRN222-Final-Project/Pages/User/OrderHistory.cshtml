@@ -1,0 +1,77 @@
+﻿@page
+@model PRN222_Final_Project.Pages.User.OrderHistoryModel
+@{
+}
+<head>
+    <link rel="stylesheet" href="~/css/bookdetail.css" asp-append-version="true" />
+</head>
+<!-- Order History Section -->
+<div class="container order-history-container">
+    <h2 class="text-center mb-4">Lịch Sử Đơn Hàng</h2>
+    <!-- Filter -->
+    <div class="filter-container">
+        <select class="filter-select" id="statusFilter">
+            <option value="all">Tất cả trạng thái</option>
+            <option value="completed">Đã giao</option>
+            <option value="pending">Đang xử lý</option>
+            <option value="cancelled">Đã hủy</option>
+        </select>
+    </div>
+    <div class="order-items">
+        <!-- Order Item 1 -->
+        <div class="order-item" data-status="completed">
+            <div class="order-info">
+                <p class="order-id">Đơn hàng #DH001</p>
+                <div class="order-date-status">
+                    <p class="order-date">Ngày đặt: 01/03/2025</p>
+                    <span class="order-status completed">Đã giao</span>
+                </div>
+                <p class="order-total">610.000đ</p>
+            </div>
+            <button class="btn-details">Xem chi tiết</button>
+        </div>
+        <!-- Order Item 2 -->
+        <div class="order-item" data-status="pending">
+            <div class="order-info">
+                <p class="order-id">Đơn hàng #DH002</p>
+                <div class="order-date-status">
+                    <p class="order-date">Ngày đặt: 28/02/2025</p>
+                    <span class="order-status pending">Đang xử lý</span>
+                </div>
+                <p class="order-total">450.000đ</p>
+            </div>
+            <button class="btn-details">Xem chi tiết</button>
+        </div>
+        <!-- Order Item 3 -->
+        <div class="order-item" data-status="cancelled">
+            <div class="order-info">
+                <p class="order-id">Đơn hàng #DH003</p>
+                <div class="order-date-status">
+                    <p class="order-date">Ngày đặt: 25/02/2025</p>
+                    <span class="order-status cancelled">Đã hủy</span>
+                </div>
+                <p class="order-total">300.000đ</p>
+            </div>
+            <button class="btn-details">Xem chi tiết</button>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Order History Pagination">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">«</span>
+                </a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">»</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
