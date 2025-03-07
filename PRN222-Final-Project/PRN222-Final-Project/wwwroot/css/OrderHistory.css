@@ -1,0 +1,135 @@
+﻿/* Order History Section */
+.order-history-container {
+    background: var(--light-bg);
+    border-radius: 15px;
+    box-shadow: var(--shadow-neon);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.order-item {
+    padding: 1.5rem;
+    border-bottom: 1px solid #E5E7EB;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+.order-info {
+    flex-grow: 1;
+}
+
+.order-id {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.order-date-status {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.order-date {
+    color: #6B7280;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.order-total {
+    color: #16A34A;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+}
+
+.order-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+    .order-status.pending {
+        background: #FBBF24;
+        color: white;
+    }
+
+    .order-status.completed {
+        background: #16A34A;
+        color: white;
+    }
+
+    .order-status.cancelled {
+        background: #EF4444;
+        color: white;
+    }
+
+.btn-details {
+    background: var(--neon-orange);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: var(--shadow-neon);
+}
+
+    .btn-details:hover {
+        background: #F97316;
+        transform: scale(1.05);
+    }
+
+/* Filter */
+.filter-container {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.filter-select {
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #D1D5DB;
+    font-size: 1rem;
+    color: #1F2937;
+    background: white;
+    transition: border-color 0.3s;
+    width: 200px;
+}
+
+    .filter-select:focus {
+        border-color: var(--neon-orange);
+        outline: none;
+        box-shadow: 0 0 5px rgba(255, 87, 51, 0.5);
+    }
+
+/* Pagination */
+.pagination {
+    justify-content: center;
+    margin-top: 1rem; /* Giảm margin để gần danh sách hơn */
+}
+
+.page-link {
+    color: var(--neon-orange);
+    border: 1px solid var(--neon-orange);
+    transition: all 0.3s;
+}
+
+    .page-link:hover {
+        background: var(--neon-orange);
+        color: white;
+        border-color: var(--neon-orange);
+    }
+
+.page-item.active .page-link {
+    background: var(--neon-orange);
+    border-color: var(--neon-orange);
+    color: white;
+}
