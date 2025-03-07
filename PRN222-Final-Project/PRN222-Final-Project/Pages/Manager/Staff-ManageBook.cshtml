@@ -1,0 +1,166 @@
+﻿@page "{pageNumber:int?}"
+@{
+    Layout = "_AdminLayout";
+}
+@model PRN222_Final_Project.Pages.Manager.Staff_ManageBookModel
+@{
+}
+<head>
+    <link rel="stylesheet" href="~/css/staff_managebook.css" asp-append-version="true" />
+</head>
+<div class="header">
+    <span>Quản Lý Sách</span>
+    <span class="user-info"><i class="fas fa-user me-2"></i> Staff</span>
+</div>
+
+<!-- Book Management -->
+<div class="book-management">
+    <div class="search-bar">
+        <form method="get" action="/Manager/Staff-ManageBook" class="row g-2">
+            <div class="col">
+                <input type="text" class="form-control" placeholder="Tìm kiếm sách..." id="searchInput" asp-for="SearchTerm">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Tìm</button>
+            </div>
+        </form>
+        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="openAddModal()">
+            <i class="fas fa-plus me-2"></i>Thêm Sách
+        </button>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên Sách</th>
+                <th>Tác Giả</th>
+                <th>Giá</th>
+                <th>Số Lượng</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody id="bookTable">
+            @foreach (var book in @Model.Books)
+            {
+                <tr>
+                    <td>@book.ProductId</td>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.Price</td>
+                    <td>@book.Stock</td>
+                    <td>
+                        <button class="btn btn-edit btn-sm" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="openEditModal(this)">
+                            <i class="fas fa-edit"></i> Sửa
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination">
+            @{
+                int totalPages = (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize);
+            }
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                    <a class="page-link"
+                       asp-page="/Manager/Staff-ManageBook"
+                       asp-route-pageNumber="@i"
+                       asp-route-searchTerm="@Model.SearchTerm">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Thêm Sách</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data" id="addBookForm">
+                    <div class="image-input-wrapper mb-3">
+                        <img src="https://via.placeholder.com/150" class="image-preview" id="imagePreview" alt="Book Image">
+                        <input type="file" id="bookImage" name="ImageFile" accept="image/*" onchange="previewImage(event)">
+                        <label for="bookImage" class="image-label"></label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tên Sách</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Thể Loại</label>
+                        <select class="form-select mb-3" name="categoryId" required>
+                            @foreach (var category in Model.Categories)
+                            {
+                                <option value="@category.CategoryId">@category.CategoryName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tác Giả</label>
+                        <input type="text" class="form-control" name="author" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Giá</label>
+                        <input type="number" class="form-control" name="price" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số Lượng</label>
+                        <input type="number" class="form-control" name="stock" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô Tả</label>
+                        <textarea class="form-control" name="description" rows="4"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isEditMode = false;
+
+    function openAddModal() {
+        isEditMode = false;
+        document.getElementById('modalTitle').textContent = 'Thêm Sách';
+        document.getElementById('bookForm').reset();
+        document.getElementById('imagePreview').src = 'https://via.placeholder.com/150';
+    }
+
+    function openEditModal(button) {
+        isEditMode = true;
+        document.getElementById('modalTitle').textContent = 'Sửa Sách';
+        const row = button.closest('tr');
+        document.getElementById('bookName').value = row.cells[1].textContent;
+        document.getElementById('bookAuthor').value = row.cells[2].textContent;
+        document.getElementById('bookPrice').value = parseInt(row.cells[3].textContent);
+        document.getElementById('bookQuantity').value = row.cells[4].textContent;
+        document.getElementById('imagePreview').src = 'https://via.placeholder.com/150';
+        document.getElementById('bookDescription').value = '';
+    }
+
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('imagePreview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+</script>

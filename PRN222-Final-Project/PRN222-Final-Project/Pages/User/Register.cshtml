@@ -1,0 +1,79 @@
+﻿@page
+@model PRN222_Final_Project.Pages.User.RegisterModel
+@{
+}
+<style>
+    /* Register Form */
+    .register-container {
+        background: var(--light-bg);
+        border-radius: 15px;
+        box-shadow: var(--shadow-neon);
+        padding: 2rem;
+        margin: 4rem auto;
+        max-width: 400px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #D1D5DB;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+        .form-input:focus {
+            border-color: var(--neon-orange);
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 87, 51, 0.5);
+        }
+
+    .btn-register {
+        background: var(--neon-orange);
+        border: none;
+        padding: 0.75rem;
+        border-radius: 25px;
+        font-weight: 600;
+        color: white;
+        width: 100%;
+        transition: all 0.3s;
+        box-shadow: var(--shadow-neon);
+    }
+
+        .btn-register:hover {
+            background: #F97316;
+            transform: scale(1.05);
+        }
+
+    .form-link {
+        color: var(--neon-orange);
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+        .form-link:hover {
+            color: #F97316;
+        }
+</style>
+<div class="register-container">
+    <h2 class="text-center mb-4">Đăng Ký</h2>
+    <form>
+        <div class="mb-3">
+            <input type="text" class="form-input" placeholder="Họ và tên" required>
+        </div>
+        <div class="mb-3">
+            <input type="email" class="form-input" placeholder="Email" required>
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-input" placeholder="Mật khẩu" required>
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-input" placeholder="Xác nhận mật khẩu" required>
+        </div>
+        <button type="submit" class="btn-register">Đăng Ký</button>
+    </form>
+    <p class="text-center mt-3">
+        Đã có tài khoản? <a href="/User/Login" class="form-link">Đăng nhập ngay</a>
+    </p>
+</div>

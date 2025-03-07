@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\images\books\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
 

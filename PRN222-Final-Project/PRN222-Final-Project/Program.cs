@@ -24,6 +24,12 @@ namespace PRN222_Final_Project
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 
+            builder.Services.AddScoped<IUserRepository,  UserRepository>();
+            builder.Services.AddScoped<IUserService, UserService>();
+
+            builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<IBookService, BookService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -41,7 +47,7 @@ namespace PRN222_Final_Project
 
             app.MapRazorPages();
 
-            app.MapFallbackToPage("/Customer/Home");
+            app.MapFallbackToPage("/User/Home");
 
             app.Run();
         }
