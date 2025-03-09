@@ -1,0 +1,132 @@
+﻿@page
+@model LingoVerse.Pages.User.HomeModel
+@{
+}
+<head>
+    <link rel="stylesheet" href="~/css/Home.css" asp-append-version="true" />
+</head>
+<!-- Search and Filter -->
+<div class="container search-filter-container">
+    <div class="search-bar">
+        <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Tìm kiếm bài báo..." aria-label="Search">
+            <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+    <div class="filter-selects">
+        <select class="form-select">
+            <option value="">Chọn ngôn ngữ</option>
+            <option value="english">Tiếng Anh</option>
+            <option value="french">Tiếng Pháp</option>
+            <option value="japanese">Tiếng Nhật</option>
+        </select>
+        <select class="form-select">
+            <option value="">Chọn cấp độ</option>
+            <option value="beginner">Sơ cấp (A1-A2)</option>
+            <option value="intermediate">Trung cấp (B1-B2)</option>
+            <option value="advanced">Nâng cao (C1-C2)</option>
+        </select>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container mt-4">
+    <div class="row">
+        <!-- Left Sidebar Ads -->
+        <div class="col-lg-2 d-none d-lg-block">
+            @* <div class="ad-space side-ad">
+                <p>Quảng cáo 160x600</p>
+            </div> *@
+        </div>
+
+        <!-- News List -->
+        <div class="col-lg-8">
+            <!-- Top Ad Space -->
+            @* <div class="ad-space">
+                <p>Quảng cáo 728x90</p>
+            </div> *@
+
+            <a href="/User/Post-Detail" class="text-decoration-none">
+                <div class="card news-card">
+                    <div class="row g-0">
+                        <div class="col-md-3">
+                            <img src="https://via.placeholder.com/300x200" class="img-fluid" alt="Tin tức">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <span class="category-label">English - Intermediate</span>
+                                <h5 class="card-title">AI Breakthrough in 2049</h5>
+                                <p class="card-text">A glimpse into the future with new inventions...</p>
+                                <p class="card-text"><small><i class="far fa-clock"></i> 2 hours ago</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="article.html" class="text-decoration-none">
+                <div class="card news-card">
+                    <div class="row g-0">
+                        <div class="col-md-3">
+                            <img src="https://via.placeholder.com/300x200" class="img-fluid" alt="Tin tức">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <span class="category-label">French - Beginner</span>
+                                <h5 class="card-title">Une Nouvelle Ère d'IA</h5>
+                                <p class="card-text">Un aperçu de l'avenir avec de nouvelles inventions...</p>
+                                <p class="card-text"><small><i class="far fa-clock"></i> 1 giờ trước</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Mobile Ad (xen kẽ giữa các bài) -->
+            @* <div class="ad-space mobile-ad">
+                <p>Quảng cáo 320x100 (Mobile)</p>
+            </div> *@
+
+            <a href="article.html" class="text-decoration-none">
+                <div class="card news-card">
+                    <div class="row g-0">
+                        <div class="col-md-3">
+                            <img src="https://via.placeholder.com/300x200" class="img-fluid" alt="Tin tức">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <span class="category-label">Japanese - Advanced</span>
+                                <h5 class="card-title">2049年のAI革命</h5>
+                                <p class="card-text">新しい発明による未来の一瞥...</p>
+                                <p class="card-text"><small><i class="far fa-clock"></i> 3 giờ trước</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous">«</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#" aria-label="Next">»</a></li>
+                </ul>
+            </nav>
+
+            <!-- Bottom Ad Space -->
+            @* <div class="ad-space">
+                <p>Quảng cáo 728x90</p>
+            </div> *@
+        </div>
+
+        <!-- Right Sidebar Ads -->
+        <div class="col-lg-2 d-none d-lg-block">
+            @* <div class="ad-space side-ad">
+                <p>Quảng cáo 160x600</p>
+            </div> *@
+        </div>
+    </div>
+</div>

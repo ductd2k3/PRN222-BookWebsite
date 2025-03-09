@@ -1,0 +1,23 @@
+﻿@page
+@model LingoVerse.Pages.User.AI_WritingModel
+@{
+}
+<head>
+    <link rel="stylesheet" href="~/css/AI-Writing.css" asp-append-version="true" />
+</head>
+<!-- Writing Practice Section -->
+<div class="writing-container">
+    <h2>Luyện AI Writing</h2>
+    <!-- Input Area -->
+    <div class="input-area">
+        <textarea placeholder="Nhập đoạn văn của bạn tại đây..."></textarea>
+        <button class="btn btn-submit">Gửi để đánh giá</button>
+    </div>
+    <!-- Result Area -->
+    <div class="result-area">
+        <h3>Kết quả đánh giá từ AI</h3>
+        <div class="result-placeholder">
+            <p>Kết quả đánh giá sẽ hiển thị tại đây sau khi bạn gửi đoạn văn.</p>
+        </div>
+    </div>
+</div>
