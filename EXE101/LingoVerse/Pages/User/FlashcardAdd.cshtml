@@ -1,0 +1,166 @@
+﻿@page
+@model LingoVerse.Pages.User.FlashcardAddModel
+@{
+}
+<style>
+    body {
+        background: linear-gradient(135deg, #0d1b2a, #1b263b);
+        color: #e0e1dd;
+        font-family: 'Arial', sans-serif;
+    }
+    .main-content {
+        flex: 1;
+        padding: 40px 0;
+    }
+
+    .create-container {
+        background: #1b263b;
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 10px 20px rgba(119, 141, 169, 0.5);
+    }
+
+        .create-container h2 {
+            color: #00b4d8;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .create-container .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #e0e1dd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+            .create-container .form-control::placeholder {
+                color: #778da9;
+            }
+
+    .word-entry {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+        .word-entry .row {
+            flex-grow: 1;
+        }
+
+    .delete-btn {
+        background: #dc3545;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        color: #fff;
+        font-size: 14px;
+        margin-left: 15px;
+        transition: background 0.3s;
+        cursor: pointer;
+    }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+    .add-word-btn {
+        background: #00b4d8;
+        border: none;
+        border-radius: 25px;
+        padding: 10px 20px;
+        color: #fff;
+        font-weight: bold;
+        transition: background 0.3s;
+        display: block;
+        margin: 20px auto;
+    }
+
+        .add-word-btn:hover {
+            background: #4361ee;
+        }
+
+    .save-btn {
+        background: #28a745;
+        border: none;
+        border-radius: 25px;
+        padding: 10px 30px;
+        color: #fff;
+        font-weight: bold;
+        transition: background 0.3s;
+        display: block;
+        margin: 20px auto 0;
+    }
+
+        .save-btn:hover {
+            background: #218838;
+        }
+    label{
+        color: #e0e1dd;
+    }
+</style>
+<div class="main-content">
+    <div class="container">
+        <div class="create-container">
+            <h2>Tạo Bộ Thẻ Ghi Nhớ</h2>
+            <form id="flashcardForm">
+                <div class="mb-3">
+                    <label for="setName" class="form-label">Tên Bộ Thẻ</label>
+                    <input type="text" class="form-control" id="setName" placeholder="Nhập tên bộ thẻ..." required>
+                </div>
+                <div id="wordList">
+                    <div class="word-entry">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" placeholder="Từ vựng" required>
+                            </div>
+                            <div class="col-md-7">
+                                <textarea class="form-control" rows="2" placeholder="Định nghĩa" required></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="delete-btn" onclick="deleteWordEntry(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="add-word-btn" onclick="addWordEntry()">
+                    <i class="fas fa-plus"></i> Thêm Từ
+                </button>
+                <button type="submit" class="save-btn">Lưu Bộ Thẻ</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function addWordEntry() {
+        const wordList = document.getElementById('wordList');
+        const newEntry = document.createElement('div');
+        newEntry.className = 'word-entry';
+        newEntry.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" placeholder="Từ vựng" required>
+                        </div>
+                        <div class="col-md-7">
+                            <textarea class="form-control" rows="2" placeholder="Định nghĩa" required></textarea>
+                        </div>
+                    </div>
+                    <button type="button" class="delete-btn" onclick="deleteWordEntry(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+        wordList.appendChild(newEntry);
+    }
+
+    function deleteWordEntry(button) {
+        const wordEntry = button.parentElement;
+        wordEntry.remove();
+    }
+</script>

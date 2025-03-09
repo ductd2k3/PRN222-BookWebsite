@@ -1,0 +1,105 @@
+﻿@page
+@model LingoVerse.Pages.User.Post_DetailModel
+@{
+}
+<head>
+    <link rel="stylesheet" href="~/css/PostDetail.css" asp-append-version="true" />
+</head>
+<!-- Main Content -->
+<div class="container mt-4">
+    <div class="row">
+        <!-- Left Sidebar Ads -->
+        <div class="col-lg-2 d-none d-lg-block">
+            <div class="ad-space side-ad">
+                <p>Quảng cáo 160x600</p>
+            </div>
+        </div>
+
+        <!-- Article Content -->
+        <div class="col-lg-8">
+            <!-- Top Ad Space -->
+            <div class="ad-space">
+                <p>Quảng cáo 728x90</p>
+            </div>
+
+            <div class="article-container">
+                <h1 class="article-title">AI Breakthrough in 2049</h1>
+                <div class="article-meta">
+                    <span><i class="far fa-clock"></i> Date: 02/03/2025</span> |
+                    <span><i class="fas fa-user"></i> Author: John Future</span> |
+                    <span><i class="fas fa-eye"></i> 1,234 views</span> |
+                    <span><i class="fas fa-graduation-cap"></i> Level: Intermediate</span>
+                </div>
+                <img src="https://via.placeholder.com/800x400" class="article-image" alt="Hình minh họa">
+                <div class="article-content">
+                    <p>Artificial Intelligence (AI) is entering a new era where machines not only assist humans but also shape the future. In 2049, breakthroughs show that AI can learn, create, and even make decisions for humans in many fields.</p>
+                    <p>From self-driving cities to personalized education, the possibilities are endless. This article explores how AI is transforming our world.</p>
+                </div>
+                <div class="share-buttons">
+                    <span>Share: </span>
+                    <a href="#" title="Share on Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Share on LinkedIn"><i class="fab fa-linkedin"></i></a>
+                </div>
+
+                <!-- Mobile Ad (xen kẽ trước câu hỏi) -->
+                <div class="ad-space mobile-ad">
+                    <p>Quảng cáo 320x100 (Mobile)</p>
+                </div>
+
+                <!-- Questions Section -->
+                <div class="questions-section">
+                    <h5>Comprehension Questions</h5>
+                    <form id="quiz-form">
+                        <div class="question-item" data-correct="q1b">
+                            <p>1. What is the main topic of the article?</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q1" id="q1a" value="q1a">
+                                <label class="form-check-label" for="q1a">A. Space exploration</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q1" id="q1b" value="q1b">
+                                <label class="form-check-label" for="q1b">B. Artificial Intelligence</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q1" id="q1c" value="q1c">
+                                <label class="form-check-label" for="q1c">C. Time travel</label>
+                            </div>
+                            <div class="result" id="result1"></div>
+                        </div>
+                        <div class="question-item" data-correct="q2b">
+                            <p>2. In which year do the breakthroughs happen?</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q2" id="q2a" value="q2a">
+                                <label class="form-check-label" for="q2a">A. 2025</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q2" id="q2b" value="q2b">
+                                <label class="form-check-label" for="q2b">B. 2049</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q2" id="q2c" value="q2c">
+                                <label class="form-check-label" for="q2c">C. 2100</label>
+                            </div>
+                            <div class="result" id="result2"></div>
+                        </div>
+                        <button type="button" id="check-answers" class="btn">Check Answers</button>
+                        <div id="score"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bottom Ad Space -->
+            <div class="ad-space">
+                <p>Quảng cáo 728x90</p>
+            </div>
+        </div>
+
+        <!-- Right Sidebar Ads -->
+        <div class="col-lg-2 d-none d-lg-block">
+            <div class="ad-space side-ad">
+                <p>Quảng cáo 160x600</p>
+            </div>
+        </div>
+    </div>
+</div>

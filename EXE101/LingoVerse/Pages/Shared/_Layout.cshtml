@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học Ngoại Ngữ Qua Báo</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/UserLayOut.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/LingoVerse.styles.css" asp-append-version="true" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <a class="navbar-brand" href="/">Học Ngoại Ngữ Qua Báo</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="/">Trang Chủ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/User/FlashcardList">Thẻ ghi nhớ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/User/AI-Writing">Luyện viết</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/User/AI-Translate">Dịch</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/User/Premium">Nâng cấp</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/User/Login">Đăng nhập</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    @RenderBody()
+
+    <!-- Footer -->
+    <footer class="mt-4 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Liên hệ</h5>
+                    <p><i class="fas fa-envelope"></i> contact@tintuc2049.com</p>
+                    <p><i class="fas fa-phone"></i> 0123-456-789</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Theo dõi</h5>
+                    <a href="#" class="text-white me-2"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

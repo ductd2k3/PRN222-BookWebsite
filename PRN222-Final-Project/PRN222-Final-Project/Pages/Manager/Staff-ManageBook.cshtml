@@ -24,7 +24,7 @@
                 <button type="submit" class="btn btn-primary">Tìm</button>
             </div>
         </form>
-        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="openAddModal()">
+        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#bookModalAdd">
             <i class="fas fa-plus me-2"></i>Thêm Sách
         </button>
     </div>
@@ -50,8 +50,18 @@
                     <td>@book.Price</td>
                     <td>@book.Stock</td>
                     <td>
-                        <button class="btn btn-edit btn-sm" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="openEditModal(this)">
-                            <i class="fas fa-edit"></i> Sửa
+                        <button class="btn btn-warning btn-edit-book"
+                                data-id="@book.ProductId"
+                                data-title="@book.Title"
+                                data-author="@book.Author"
+                                data-price="@book.Price"
+                                data-stock="@book.Stock"
+                                data-description="@book.Description"
+                                data-category="@book.CategoryId"
+                                data-image="@book.ImageUrl"
+                                data-bs-toggle="modal"
+                                data-bs-target="#bookModalEdit">
+                            Sửa
                         </button>
                     </td>
                 </tr>
@@ -77,7 +87,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="bookModal" tabindex="-1">
+<div class="modal fade" id="bookModalAdd" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -126,38 +136,121 @@
                         <button type="submit" class="btn btn-primary">Lưu</button>
                     </div>
                 </form>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="bookModalEdit" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Thêm Sách</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data" id="editBookForm">
+                    <input type="hidden" name="bookId" id="bookId" />
+                    <div class="image-input-wrapper mb-3">
+                        <img src="https://via.placeholder.com/150" class="image-preview" id="imagePreviewEdit" alt="Book Image">
+                        <input type="file" id="bookImageEdit" name="ImageFile" accept="image/*" onchange="previewImage(event)">
+                        <label for="bookImageEdit" class="image-label"></label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tên Sách</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Thể Loại</label>
+                        <select class="form-select mb-3" name="categoryId" required>
+                            @foreach (var category in Model.Categories)
+                            {
+                                <option value="@category.CategoryId">@category.CategoryName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tác Giả</label>
+                        <input type="text" class="form-control" name="author" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Giá</label>
+                        <input type="number" class="form-control" name="price" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số Lượng</label>
+                        <input type="number" class="form-control" name="stock" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô Tả</label>
+                        <textarea class="form-control" name="description" rows="4"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
-    let isEditMode = false;
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btn-edit-book").forEach(button => {
+            button.addEventListener("click", function () {
+                // Lấy dữ liệu từ attributes
+                const bookId = this.getAttribute("data-id");
+                const title = this.getAttribute("data-title");
+                const author = this.getAttribute("data-author");
+                const price = this.getAttribute("data-price");
+                const stock = this.getAttribute("data-stock");
+                const description = this.getAttribute("data-description") || '';
+                const categoryId = this.getAttribute("data-category");
+                const imageUrl = this.getAttribute("data-image");
 
-    function openAddModal() {
-        isEditMode = false;
-        document.getElementById('modalTitle').textContent = 'Thêm Sách';
-        document.getElementById('bookForm').reset();
-        document.getElementById('imagePreview').src = 'https://via.placeholder.com/150';
-    }
+                // Cập nhật modal edit
+                const modal = document.querySelector('#bookModalEdit');
+                modal.querySelector('.modal-title').textContent = "Chỉnh Sửa Sách";
+                const form = modal.querySelector('#editBookForm');
 
-    function openEditModal(button) {
-        isEditMode = true;
-        document.getElementById('modalTitle').textContent = 'Sửa Sách';
-        const row = button.closest('tr');
-        document.getElementById('bookName').value = row.cells[1].textContent;
-        document.getElementById('bookAuthor').value = row.cells[2].textContent;
-        document.getElementById('bookPrice').value = parseInt(row.cells[3].textContent);
-        document.getElementById('bookQuantity').value = row.cells[4].textContent;
-        document.getElementById('imagePreview').src = 'https://via.placeholder.com/150';
-        document.getElementById('bookDescription').value = '';
-    }
+                // Cập nhật các field
+                form.querySelector('input[name="bookId"]').value = bookId;
+                form.querySelector('input[name="name"]').value = title;
+                form.querySelector('input[name="author"]').value = author;
+                form.querySelector('input[name="price"]').value = price;
+                form.querySelector('input[name="stock"]').value = stock;
+                form.querySelector('textarea[name="description"]').value = description;
+                form.querySelector('select[name="categoryId"]').value = categoryId;
+
+                // Cập nhật ảnh
+                const imagePreview = modal.querySelector('#imagePreviewEdit');
+                const bookImageEdit = modal.querySelector('#bookImageEdit');
+                imagePreview.src = imageUrl;
+                bookImageEdit.value = imageUrl;
+            });
+        });
+    });
+
 
     function previewImage(event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                document.getElementById('imagePreview').src = e.target.result;
+                const modal = event.target.closest('.modal');
+                const imagePreview = modal.querySelector('#imagePreview');
+                const imagePreviewEdit = modal.querySelector('#imagePreviewEdit');
+
+                if (imagePreview) {
+                    imagePreview.src = e.target.result;
+                }
+                if (imagePreviewEdit) {
+                    imagePreviewEdit.src = e.target.result;
+                }
             };
             reader.readAsDataURL(file);
         }
