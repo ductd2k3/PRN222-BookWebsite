@@ -1,0 +1,145 @@
+﻿@page
+@{
+    Layout = "_AdminLayout";
+}
+@model PRN222_Final_Project.Pages.Manager.Staff_ManageCategoryModel
+@{
+}
+<head>
+    <link rel="stylesheet" href="~/css/staff_managecategory.css" asp-append-version="true" />
+</head>
+<style>
+    /* Alert Message */
+    .alert-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+</style>
+
+<div class="alert-container">
+    @if (!string.IsNullOrEmpty(Model.AlertMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @Model.AlertMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+</div>
+<!-- Main Content -->
+<div class="main-content">
+    <div class="header">
+        <span>Quản Lý Danh Mục</span>
+        <span class="user-info"><i class="fas fa-user me-2"></i> Staff</span>
+    </div>
+
+    <!-- Category Management -->
+    <div class="category-management">
+        <div class="search-bar">
+            <input type="text" class="form-control" placeholder="Tìm kiếm danh mục..." id="searchInput">
+            <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openAddModal()">
+                <i class="fas fa-plus me-2"></i>Thêm Danh Mục
+            </button>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên Danh Mục</th>
+                    <th>Mô Tả</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody id="categoryTable">
+                <!-- Dữ liệu mẫu -->
+                @foreach(var category in Model.Categories)
+                {
+                    <tr>
+                        <td>@(category.CategoryId)</td>
+                        <td>@(category.CategoryName)</td>
+                        <td>@(category.Description)</td>
+                        <td>
+                            <button class="btn btn-edit btn-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#categoryModal"
+                            data-id = "@category.CategoryId"
+                            data-name = "@category.CategoryName"
+                            data-description="@category.Description"
+                            onclick="openEditModal(this)">
+                                <i class="fas fa-edit"></i> Sửa
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Thêm Danh Mục</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="categoryForm">
+                    <input type="hidden" name="categoryId" value="0" id="categoryId"/>
+                    <div class="mb-3">
+                        <label class="form-label">Tên Danh Mục</label>
+                        <input type="text" class="form-control" id="categoryName" name="categoryName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô Tả</label>
+                        <textarea class="form-control" id="categoryDescription" rows="4" placeholder="Nhập mô tả danh mục..." name="categoryDescription"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let isEditMode = false;
+
+    function openAddModal() {
+        isEditMode = false;
+        document.getElementById('modalTitle').textContent = 'Thêm Danh Mục';
+        document.getElementById('categoryForm').reset();
+    }
+
+    function openEditModal(button) {
+        isEditMode = true;
+
+        let categotyId = button.getAttribute("data-id") || "0";
+        let categoryName = button.getAttribute("data-name") || "Error";
+        let description = button.getAttribute("data-description") || "Error";
+
+        document.getElementById('modalTitle').textContent = 'Sửa Danh Mục';
+        document.getElementById('categoryName').value = categoryName;
+        document.getElementById('categoryDescription').value = description;
+        document.getElementById('categoryId').value = categotyId;
+    }
+
+    // Tìm kiếm
+    document.getElementById('searchInput').addEventListener('input', function (e) {
+        const searchText = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#categoryTable tr');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchText) ? '' : 'none';
+        });
+    });
+
+    function submitForm() {
+        document.getElementById('categoryForm').submit();
+    }
+
+</script>

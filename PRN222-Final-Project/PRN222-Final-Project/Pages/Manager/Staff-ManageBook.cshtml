@@ -3,11 +3,29 @@
     Layout = "_AdminLayout";
 }
 @model PRN222_Final_Project.Pages.Manager.Staff_ManageBookModel
-@{
-}
+
 <head>
     <link rel="stylesheet" href="~/css/staff_managebook.css" asp-append-version="true" />
 </head>
+
+<style>
+    /* Alert Message */
+    .alert-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+</style>
+<div class="alert-container">
+    @if (!string.IsNullOrEmpty(Model.AlertMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @Model.AlertMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+</div>
 <div class="header">
     <span>Quản Lý Sách</span>
     <span class="user-info"><i class="fas fa-user me-2"></i> Staff</span>
@@ -15,20 +33,23 @@
 
 <!-- Book Management -->
 <div class="book-management">
+    <!-- Thanh tìm kiếm và nút thêm -->
     <div class="search-bar">
-        <form method="get" action="/Manager/Staff-ManageBook" class="row g-2">
+        <form method="get" asp-page="/Manager/Staff-ManageBook" class="row g-2">
             <div class="col">
-                <input type="text" class="form-control" placeholder="Tìm kiếm sách..." id="searchInput" asp-for="SearchTerm">
+                <input type="text" class="form-control" placeholder="Tìm kiếm sách..."
+                       id="searchInput" name="SearchTerm" value="@Model.SearchTerm" />
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary">Tìm</button>
             </div>
         </form>
-        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#bookModalAdd">
+        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#bookModal">
             <i class="fas fa-plus me-2"></i>Thêm Sách
         </button>
     </div>
 
+    <!-- Bảng sách -->
     <table class="table">
         <thead>
             <tr>
@@ -41,7 +62,7 @@
             </tr>
         </thead>
         <tbody id="bookTable">
-            @foreach (var book in @Model.Books)
+            @foreach (var book in Model.Books)
             {
                 <tr>
                     <td>@book.ProductId</td>
@@ -60,7 +81,7 @@
                                 data-category="@book.CategoryId"
                                 data-image="@book.ImageUrl"
                                 data-bs-toggle="modal"
-                                data-bs-target="#bookModalEdit">
+                                data-bs-target="#bookModal">
                             Sửa
                         </button>
                     </td>
@@ -68,6 +89,8 @@
             }
         </tbody>
     </table>
+
+    <!-- Phân trang -->
     <nav>
         <ul class="pagination">
             @{
@@ -87,15 +110,17 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="bookModalAdd" tabindex="-1">
+<div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalTitle">Thêm Sách</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" enctype="multipart/form-data" id="addBookForm">
+                <form method="post" enctype="multipart/form-data" id="bookForm" asp-page="/Manager/Staff-ManageBook">
+                    <input type="hidden" name="bookId" id="bookId" value="0" />
+                    <input type="hidden" name="currentImageUrl" id="currentImageUrl" value="" /> <!-- Thêm trường ẩn -->
                     <div class="image-input-wrapper mb-3">
                         <img src="https://via.placeholder.com/150" class="image-preview" id="imagePreview" alt="Book Image">
                         <input type="file" id="bookImage" name="ImageFile" accept="image/*" onchange="previewImage(event)">
@@ -103,11 +128,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Tên Sách</label>
-                        <input type="text" class="form-control" name="name" required>
+                        <input type="text" class="form-control" name="name" id="bookName" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Thể Loại</label>
-                        <select class="form-select mb-3" name="categoryId" required>
+                        <select class="form-select" name="categoryId" id="bookCategory" required>
                             @foreach (var category in Model.Categories)
                             {
                                 <option value="@category.CategoryId">@category.CategoryName</option>
@@ -116,21 +141,20 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Tác Giả</label>
-                        <input type="text" class="form-control" name="author" required>
+                        <input type="text" class="form-control" name="author" id="bookAuthor" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Giá</label>
-                        <input type="number" class="form-control" name="price" min="0" required>
+                        <input type="number" class="form-control" name="price" id="bookPrice" min="0" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Số Lượng</label>
-                        <input type="number" class="form-control" name="stock" min="1" required>
+                        <input type="number" class="form-control" name="stock" id="bookStock" min="1" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Mô Tả</label>
-                        <textarea class="form-control" name="description" rows="4"></textarea>
+                        <textarea class="form-control" name="description" id="bookDescription" rows="4"></textarea>
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         <button type="submit" class="btn btn-primary">Lưu</button>
@@ -141,119 +165,60 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="bookModalEdit" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Thêm Sách</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" enctype="multipart/form-data" id="editBookForm">
-                    <input type="hidden" name="bookId" id="bookId" />
-                    <div class="image-input-wrapper mb-3">
-                        <img src="https://via.placeholder.com/150" class="image-preview" id="imagePreviewEdit" alt="Book Image">
-                        <input type="file" id="bookImageEdit" name="ImageFile" accept="image/*" onchange="previewImage(event)">
-                        <label for="bookImageEdit" class="image-label"></label>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tên Sách</label>
-                        <input type="text" class="form-control" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Thể Loại</label>
-                        <select class="form-select mb-3" name="categoryId" required>
-                            @foreach (var category in Model.Categories)
-                            {
-                                <option value="@category.CategoryId">@category.CategoryName</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tác Giả</label>
-                        <input type="text" class="form-control" name="author" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Giá</label>
-                        <input type="number" class="form-control" name="price" min="0" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Số Lượng</label>
-                        <input type="number" class="form-control" name="stock" min="1" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Mô Tả</label>
-                        <textarea class="form-control" name="description" rows="4"></textarea>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-primary">Lưu</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
+<!-- JavaScript -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Xử lý nút "Sửa"
         document.querySelectorAll(".btn-edit-book").forEach(button => {
             button.addEventListener("click", function () {
-                // Lấy dữ liệu từ attributes
-                const bookId = this.getAttribute("data-id");
-                const title = this.getAttribute("data-title");
-                const author = this.getAttribute("data-author");
-                const price = this.getAttribute("data-price");
-                const stock = this.getAttribute("data-stock");
-                const description = this.getAttribute("data-description") || '';
-                const categoryId = this.getAttribute("data-category");
-                const imageUrl = this.getAttribute("data-image");
+                const bookId = this.getAttribute("data-id") || "0";
+                const title = this.getAttribute("data-title") || "";
+                const author = this.getAttribute("data-author") || "";
+                const price = this.getAttribute("data-price") || "0";
+                const stock = this.getAttribute("data-stock") || "0";
+                const description = this.getAttribute("data-description") || "";
+                const categoryId = this.getAttribute("data-category") || "";
+                const imageUrl = this.getAttribute("data-image") || "https://via.placeholder.com/150";
 
-                // Cập nhật modal edit
-                const modal = document.querySelector('#bookModalEdit');
-                modal.querySelector('.modal-title').textContent = "Chỉnh Sửa Sách";
-                const form = modal.querySelector('#editBookForm');
+                const modal = document.querySelector("#bookModal");
+                const form = modal.querySelector("#bookForm");
 
-                // Cập nhật các field
-                form.querySelector('input[name="bookId"]').value = bookId;
-                form.querySelector('input[name="name"]').value = title;
-                form.querySelector('input[name="author"]').value = author;
-                form.querySelector('input[name="price"]').value = price;
-                form.querySelector('input[name="stock"]').value = stock;
-                form.querySelector('textarea[name="description"]').value = description;
-                form.querySelector('select[name="categoryId"]').value = categoryId;
+                modal.querySelector(".modal-title").textContent = "Chỉnh Sửa Sách";
+                form.querySelector("#bookId").value = bookId;             
+                form.querySelector("#bookName").value = title;
+                form.querySelector("#bookAuthor").value = author;
+                form.querySelector("#bookPrice").value = price;
+                form.querySelector("#bookStock").value = stock;
+                form.querySelector("#bookDescription").value = description;
+                form.querySelector("#bookCategory").value = categoryId;
+                form.querySelector("#imagePreview").src = imageUrl;
+                form.querySelector("#currentImageUrl").value = imageUrl;
 
-                // Cập nhật ảnh
-                const imagePreview = modal.querySelector('#imagePreviewEdit');
-                const bookImageEdit = modal.querySelector('#bookImageEdit');
-                imagePreview.src = imageUrl;
-                bookImageEdit.value = imageUrl;
+                console.log("Đã load dữ liệu:", { bookId, title, author, price, stock, description, categoryId, imageUrl });
             });
+        });
+
+        // Xử lý nút "Thêm Sách"
+        document.querySelector(".btn-add").addEventListener("click", function () {
+            const modal = document.querySelector("#bookModal");
+            const form = modal.querySelector("#bookForm");
+
+            modal.querySelector(".modal-title").textContent = "Thêm Sách";
+            form.reset();
+            form.querySelector("#bookId").value = "0";
+            form.querySelector("#imagePreview").src = "https://via.placeholder.com/150";
         });
     });
 
-
+    // Preview ảnh
     function previewImage(event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                const modal = event.target.closest('.modal');
-                const imagePreview = modal.querySelector('#imagePreview');
-                const imagePreviewEdit = modal.querySelector('#imagePreviewEdit');
-
-                if (imagePreview) {
-                    imagePreview.src = e.target.result;
-                }
-                if (imagePreviewEdit) {
-                    imagePreviewEdit.src = e.target.result;
-                }
+                document.querySelector("#imagePreview").src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
     }
-
 </script>

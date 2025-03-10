@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.IdentityModel.Tokens;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Services.Interface;
+using System.Net;
 
 namespace PRN222_Final_Project.Pages.Manager
 {
@@ -12,8 +14,8 @@ namespace PRN222_Final_Project.Pages.Manager
 
         public Staff_ManageBookModel(IBookService bookService, IGenericService<Category> categoryService)
         {
-            _bookService = bookService ?? throw new ArgumentNullException(nameof(bookService));
-            _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
+            _bookService = bookService;
+            _categoryService = categoryService;
         }
 
         public IEnumerable<Product> Books { get; private set; } = Enumerable.Empty<Product>();
@@ -24,7 +26,7 @@ namespace PRN222_Final_Project.Pages.Manager
 
         [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
-
+        public string AlertMessage { get; set; }
         public async Task<IActionResult> OnGetAsync(int pageNumber = 1)
         {
             try
@@ -52,7 +54,9 @@ namespace PRN222_Final_Project.Pages.Manager
             {
                 if (!ModelState.IsValid)
                 {
-                    return RedirectToPage();
+                    await OnGetAsync();
+                    AlertMessage = "Lỗi format vui lòng thử lại!";
+                    return Page();
                 }
 
                 var book = await CreateBookFromFormAsync(form, imageFile);
@@ -60,18 +64,26 @@ namespace PRN222_Final_Project.Pages.Manager
                 if (int.TryParse(form["bookId"], out int bookId) && bookId > 0)
                 {
                     book.ProductId = bookId;
+                    if(imageFile == null)
+                    {
+                        book.ImageUrl = form["currentImageUrl"];
+                    }
                     await _bookService.UpdateAsync(book);
+                    AlertMessage = "Chỉnh sửa thành công!";
                 }
                 else
                 {
                     await _bookService.AddAsync(book);
+                    AlertMessage = "Thêm thành công";
                 }
-
-                return RedirectToPage();
+                await OnGetAsync();
+                
+                return Page();
             }
             catch (Exception ex)
             {
-                return RedirectToPage();
+                await OnGetAsync();
+                return Page();
             }
         }
 

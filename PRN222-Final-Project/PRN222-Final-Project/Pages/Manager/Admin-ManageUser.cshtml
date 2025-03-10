@@ -1,0 +1,201 @@
+﻿@page
+@{
+    Layout = "_AdminLayout";
+}
+@model PRN222_Final_Project.Pages.Manager.Admin_ManageUserModel
+@{
+}
+<head>
+    <link rel="stylesheet" href="~/css/staff_managebook.css" asp-append-version="true" />
+</head>
+
+<style>
+    /* Alert Message */
+    .alert-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+</style>
+<div class="alert-container">
+    @if (!string.IsNullOrEmpty(Model.AlertMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @Model.AlertMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+</div>
+<div class="header">
+    <span>Quản Lý Nhân Viên</span>
+    <span class="user-info"><i class="fas fa-user me-2"></i> Admin</span>
+</div>
+
+<!-- Book Management -->
+<div class="book-management">
+    <!-- Thanh tìm kiếm và nút thêm -->
+    <div class="search-bar">
+        <form method="get" class="row g-2">
+            <div class="col">
+                <input type="text" class="form-control" placeholder="Tìm kiếm sách..."
+                       id="searchInput" name="Search" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Tìm</button>
+            </div>
+        </form>
+        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#userModal" onclick="openAddModal()">
+            <i class="fas fa-plus me-2"></i>Thêm Người Dùng
+        </button>
+    </div>
+
+    <!-- Bảng sách -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên Người Dùng</th>
+                <th>Email</th>
+                <th>Số Điện Thoại</th>
+                <th>Vai Trò</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody id="userTable">
+            <!-- Dữ liệu mẫu -->
+            <tr>
+                <td>1</td>
+                <td>Nguyễn Văn A</td>
+                <td>nguyenvana@example.com</td>
+                <td>0901234567</td>
+                <td>Khách Hàng</td>
+                <td>
+                    <button class="btn btn-edit btn-sm" data-bs-toggle="modal" data-bs-target="#userModal" onclick="openEditModal(this)">
+                        <i class="fas fa-edit"></i> Sửa
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Trần Thị B</td>
+                <td>tranthib@example.com</td>
+                <td>0912345678</td>
+                <td>Admin</td>
+                <td>
+                    <button class="btn btn-edit btn-sm" data-bs-toggle="modal" data-bs-target="#userModal" onclick="openEditModal(this)">
+                        <i class="fas fa-edit"></i> Sửa
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Phân trang -->
+    @* <nav>
+        <ul class="pagination">
+            @{
+                int totalPages = (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize);
+            }
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                    <a class="page-link"
+                       asp-page="/Manager/Staff-ManageUser"
+                       asp-route-pageNumber="@i"
+                       asp-route-searchTerm="@Model.Search">@i</a>
+                </li>
+            }
+        </ul>
+    </nav> *@
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Thêm Người Dùng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <div class="mb-3">
+                        <label class="form-label">Tên Người Dùng</label>
+                        <input type="text" class="form-control" id="userName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="userEmail">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số Điện Thoại</label>
+                        <input type="text" class="form-control" id="userPhone">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Vai Trò</label>
+                        <select class="form-control" id="userRole">
+                            <option value="2">Nhân viên</option>
+                            <option value="1">Quản lý</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mật Khẩu</label>
+                        <input type="password" class="form-control" id="userPassword">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="saveUser()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isEditMode = false;
+
+    function openAddModal() {
+        isEditMode = false;
+        document.getElementById('modalTitle').textContent = 'Thêm Người Dùng';
+        document.getElementById('userForm').reset();
+        document.getElementById('userPassword').style.display = 'block'; // Hiển thị mật khẩu khi thêm
+        document.getElementById('userPassword').previousElementSibling.style.display = 'block';
+    }
+
+    function openEditModal(button) {
+        isEditMode = true;
+        document.getElementById('modalTitle').textContent = 'Sửa Người Dùng';
+        const row = button.closest('tr');
+        document.getElementById('userName').value = row.cells[1].textContent;
+        document.getElementById('userEmail').value = row.cells[2].textContent;
+        document.getElementById('userPhone').value = row.cells[3].textContent;
+        document.getElementById('userRole').value = row.cells[4].textContent;
+        document.getElementById('userPassword').style.display = 'none'; // Ẩn mật khẩu khi sửa
+        document.getElementById('userPassword').previousElementSibling.style.display = 'none';
+    }
+
+    function saveUser() {
+        const user = {
+            name: document.getElementById('userName').value,
+            email: document.getElementById('userEmail').value,
+            phone: document.getElementById('userPhone').value,
+            role: document.getElementById('userRole').value,
+            password: isEditMode ? undefined : document.getElementById('userPassword').value // Chỉ lấy mật khẩu khi thêm
+        };
+        console.log(isEditMode ? 'Sửa người dùng:' : 'Thêm người dùng:', user);
+        // Thêm logic để cập nhật bảng
+        bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+    }
+
+    // Tìm kiếm
+    document.getElementById('searchInput').addEventListener('input', function (e) {
+        const searchText = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#userTable tr');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchText) ? '' : 'none';
+        });
+    });
+</script>

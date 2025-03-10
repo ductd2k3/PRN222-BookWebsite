@@ -16,5 +16,12 @@ namespace PRN222_Final_Project.Services.Implementation
         {
             return await _userRepository.login(username, password);
         }
+        public async Task<(IEnumerable<User> Items, int TotalCount)> GetUserPagesAsync(
+           string search = null,
+           int pageNumber = 1,
+           int pageSize = 10)
+        {
+            return await _userRepository.GetUserPagesAsync(search, pageNumber, pageSize);
+        }
     }
 }
