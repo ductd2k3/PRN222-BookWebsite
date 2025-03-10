@@ -73,7 +73,15 @@
                     <td>@(user.Address)</td>
                     <td>@(user.Role.RoleName)</td>
                     <td>
-                        <button class="btn btn-edit btn-sm" data-bs-toggle="modal" data-bs-target="#userModal" onclick="openEditModal(this)">
+                        <button class="btn btn-edit btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#userModal" 
+                        data-userId = "@(user.UserId)"
+                        data-userName = "@(user.Username)"
+                        data-userAddress = "@(user.Address)"
+                        data-userRole = "@(user.RoleId)"
+                        data-userEmail = "@(user.Email)"
+                        onclick="openEditModal(this)">
                             <i class="fas fa-edit"></i> Sửa
                         </button>
                     </td>
@@ -92,7 +100,7 @@
             {
                 <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
                     <a class="page-link"
-                       asp-page="/Manager/Staff-ManageUser"
+                       asp-page="/Manager/Admin-ManageUser"
                        asp-route-pageNumber="@i"
                        asp-route-searchTerm="@Model.Search">@i</a>
                 </li>
@@ -111,6 +119,9 @@
             </div>
             <div class="modal-body">
                 <form method="post" id="userForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="userId" value="0" id="userId" />
+                    <input type="hidden" name="crrPage" value="@(Model.CurrentPage)" />
                     <div class="mb-3">
                         <label class="form-label">Tên Người Dùng</label>
                         <input type="text" class="form-control" id="userName" name="userName" >
@@ -138,7 +149,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Mật Khẩu</label>
-                        <input type="password" class="form-control" id="userPassword" name="password" >
+                        <input type="password" class="form-control" id="userPassword" name="userPassword" >
                     </div>
                 </form>
             </div>
@@ -159,30 +170,34 @@
         document.getElementById('userForm').reset();
         document.getElementById('userPassword').style.display = 'block'; // Hiển thị mật khẩu khi thêm
         document.getElementById('userPassword').previousElementSibling.style.display = 'block';
+        document.getElementById('userEmail').style.display = 'block';
+        document.getElementById('userEmail').previousElementSibling.style.display = 'block';
     }
 
     function openEditModal(button) {
         isEditMode = true;
+
+        let userId = button.getAttribute("data-userId");
+        let userName = button.getAttribute("data-userName");
+        let userAddress = button.getAttribute("data-userAddress");
+        let userRole = button.getAttribute("data-userRole");
+        let userEmail = button.getAttribute("data-userEmail");
+
         document.getElementById('modalTitle').textContent = 'Sửa Người Dùng';
         const row = button.closest('tr');
-        document.getElementById('userName').value = row.cells[1].textContent;
-        document.getElementById('userEmail').value = row.cells[2].textContent;
-        document.getElementById('userPhone').value = row.cells[3].textContent;
-        document.getElementById('userRole').value = row.cells[4].textContent;
+        document.getElementById('userId').value = userId;
+        document.getElementById('userName').value = userName;
+        document.getElementById('userEmail').value = userEmail;
+        document.getElementById('userPhone').value = "123456";
+        document.getElementById('userAddress').value = userAddress;
+        document.getElementById('userRole').value = userRole;
         document.getElementById('userPassword').style.display = 'none'; // Ẩn mật khẩu khi sửa
         document.getElementById('userPassword').previousElementSibling.style.display = 'none';
+        document.getElementById('userEmail').style.display = 'none';
+        document.getElementById('userEmail').previousElementSibling.style.display = 'none';
     }
 
     function saveUser() {
-        const user = {
-            name: document.getElementById('userName').value,
-            email: document.getElementById('userEmail').value,
-            phone: document.getElementById('userPhone').value,
-            role: document.getElementById('userRole').value,
-            password: isEditMode ? undefined : document.getElementById('userPassword').value // Chỉ lấy mật khẩu khi thêm
-        };
-        console.log(isEditMode ? 'Sửa người dùng:' : 'Thêm người dùng:', user);
-        // Thêm logic để cập nhật bảng
-        bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+        document.getElementById('userForm').submit();
     }
 </script>

@@ -121,6 +121,7 @@
                 <form method="post" enctype="multipart/form-data" id="bookForm" asp-page="/Manager/Staff-ManageBook">
                     <input type="hidden" name="bookId" id="bookId" value="0" />
                     <input type="hidden" name="currentImageUrl" id="currentImageUrl" value="" /> <!-- Thêm trường ẩn -->
+                    <input type="hidden" name="crrpage" value="@(Model.CurrentPage)" />
                     <div class="image-input-wrapper mb-3">
                         <img src="https://via.placeholder.com/150" class="image-preview" id="imagePreview" alt="Book Image">
                         <input type="file" id="bookImage" name="ImageFile" accept="image/*" onchange="previewImage(event)">
