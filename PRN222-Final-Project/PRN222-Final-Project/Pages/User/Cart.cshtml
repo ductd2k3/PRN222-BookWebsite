@@ -59,32 +59,52 @@
 </div>
 
 <!-- Cart Summary -->
-<div class="container cart-summary">
-    <h3 class="mb-3">Tổng Quan Đơn Hàng</h3>
+<form method="post">
+    <div class="container cart-summary">
+        <h3 class="mb-3">Tổng Quan Đơn Hàng</h3>
 
-    <div class="d-flex justify-content-between mb-2">
-        <span>Tạm tính (@Model.ListCart.Count() sản phẩm):</span>
-        <span class="fw-bold">
-            @((Model.ListCart.Sum(x => x.Quantity * x.Price) ?? 0).ToString("N0") + " đ")
-        </span>
+        <div class="d-flex justify-content-between mb-2">
+            <span>Tạm tính (@Model.ListCart.Count() sản phẩm):</span>
+            <span class="fw-bold">
+                @((Model.ListCart.Sum(x => x.Quantity * x.Price) ?? 0).ToString("N0") + " đ")
+            </span>
+        </div>
+
+        <div class="d-flex justify-content-between mb-2">
+            <span>Phí vận chuyển:</span>
+            <span class="fw-bold">30.000 đ</span>
+        </div>
+
+        <div class="d-flex justify-content-between mb-3">
+            <span>Tổng cộng:</span>
+            <span class="fw-bold text-success fs-4">
+                @((Model.ListCart.Sum(x => x.Quantity * x.Price) + 30000).Value.ToString("N0") + " đ")
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label for="address" class="form-label fw-bold">Địa chỉ - Số điện thoại giao hàng:</label>
+            <input type="text" class="address-input form-control" id="address" name="address"
+                   placeholder="Nhập địa chỉ và số điện thoại giao hàng..." required>
+            <small id="addressError" class="text-danger" style="display: none;">Vui lòng nhập cả địa chỉ và số điện thoại!</small>
+        </div>
+
+        <button type="submit" class="btn-checkout">Thanh Toán</button>
     </div>
+</form>
 
-    <div class="d-flex justify-content-between mb-2">
-        <span>Phí vận chuyển:</span>
-        <span class="fw-bold">30.000 đ</span>
-    </div>
+<script>
+    function validateForm() {
+        var addressInput = document.getElementById("address").value.trim();
+        var errorText = document.getElementById("addressError");
 
-    <div class="d-flex justify-content-between mb-3">
-        <span>Tổng cộng:</span>
-        <span class="fw-bold text-success fs-4">
-            @((Model.ListCart.Sum(x => x.Quantity * x.Price) + 30000).Value.ToString("N0") + " đ")
-        </span>
-    </div>
-
-    <div class="mb-3">
-        <label for="address" class="form-label fw-bold">Địa chỉ - Số điện thoại giao hàng:</label>
-        <input type="text" class="address-input" id="address" placeholder="Nhập địa chỉ và số điện thoại giao hàng...">
-    </div>
-
-    <button class="btn-checkout">Thanh Toán</button>
-</div>
+        // Kiểm tra xem có nhập cả địa chỉ và số điện thoại không (ít nhất có dấu cách giữa 2 phần)
+        if (addressInput === "" || !addressInput.includes(" ")) {
+            errorText.style.display = "block";
+            return false; // Ngăn chặn form submit
+        } else {
+            errorText.style.display = "none";
+            return true;
+        }
+    }
+</script>
