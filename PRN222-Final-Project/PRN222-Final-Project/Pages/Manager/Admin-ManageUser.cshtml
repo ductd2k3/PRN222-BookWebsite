@@ -39,7 +39,7 @@
         <form method="get" class="row g-2">
             <div class="col">
                 <input type="text" class="form-control" placeholder="Tìm kiếm sách..."
-                       id="searchInput" name="Search" />
+                       id="searchInput" name="Search" asp-for="Search" />
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary">Tìm</button>
@@ -57,42 +57,33 @@
                 <th>ID</th>
                 <th>Tên Người Dùng</th>
                 <th>Email</th>
-                <th>Số Điện Thoại</th>
+                <th>Địa Chỉ</th>
                 <th>Vai Trò</th>
                 <th>Hành Động</th>
             </tr>
         </thead>
         <tbody id="userTable">
             <!-- Dữ liệu mẫu -->
-            <tr>
-                <td>1</td>
-                <td>Nguyễn Văn A</td>
-                <td>nguyenvana@example.com</td>
-                <td>0901234567</td>
-                <td>Khách Hàng</td>
-                <td>
-                    <button class="btn btn-edit btn-sm" data-bs-toggle="modal" data-bs-target="#userModal" onclick="openEditModal(this)">
-                        <i class="fas fa-edit"></i> Sửa
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Trần Thị B</td>
-                <td>tranthib@example.com</td>
-                <td>0912345678</td>
-                <td>Admin</td>
-                <td>
-                    <button class="btn btn-edit btn-sm" data-bs-toggle="modal" data-bs-target="#userModal" onclick="openEditModal(this)">
-                        <i class="fas fa-edit"></i> Sửa
-                    </button>
-                </td>
-            </tr>
+            @foreach(var user in Model.Users)
+            {
+                <tr>
+                    <td>@(user.UserId)</td>
+                    <td>@(user.Username)</td>
+                    <td>@(user.Email)</td>
+                    <td>@(user.Address)</td>
+                    <td>@(user.Role.RoleName)</td>
+                    <td>
+                        <button class="btn btn-edit btn-sm" data-bs-toggle="modal" data-bs-target="#userModal" onclick="openEditModal(this)">
+                            <i class="fas fa-edit"></i> Sửa
+                        </button>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 
     <!-- Phân trang -->
-    @* <nav>
+    <nav>
         <ul class="pagination">
             @{
                 int totalPages = (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize);
@@ -107,7 +98,7 @@
                 </li>
             }
         </ul>
-    </nav> *@
+    </nav>
 </div>
 
 <!-- Modal -->
@@ -119,29 +110,35 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="userForm">
+                <form method="post" id="userForm">
                     <div class="mb-3">
                         <label class="form-label">Tên Người Dùng</label>
-                        <input type="text" class="form-control" id="userName">
+                        <input type="text" class="form-control" id="userName" name="userName" >
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Email</label>
-                        <input type="email" class="form-control" id="userEmail">
+                        <input type="email" class="form-control" id="userEmail" name="userEmail" >
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Số Điện Thoại</label>
-                        <input type="text" class="form-control" id="userPhone">
+                        <input type="text" class="form-control" id="userPhone" name="userPhone" >
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Địa Chỉ</label>
+                        <input type="text" class="form-control" id="userAddress" name="userAddress">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Vai Trò</label>
-                        <select class="form-control" id="userRole">
-                            <option value="2">Nhân viên</option>
-                            <option value="1">Quản lý</option>
+                        <select class="form-control" id="userRole" name="userRole" >
+                            @foreach(var role in Model.Roles)
+                            {
+                                <option value="@(role.RoleId)">@(role.RoleName)</option>
+                            }
                         </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Mật Khẩu</label>
-                        <input type="password" class="form-control" id="userPassword">
+                        <input type="password" class="form-control" id="userPassword" name="password" >
                     </div>
                 </form>
             </div>
@@ -188,14 +185,4 @@
         // Thêm logic để cập nhật bảng
         bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
     }
-
-    // Tìm kiếm
-    document.getElementById('searchInput').addEventListener('input', function (e) {
-        const searchText = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#userTable tr');
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(searchText) ? '' : 'none';
-        });
-    });
 </script>
