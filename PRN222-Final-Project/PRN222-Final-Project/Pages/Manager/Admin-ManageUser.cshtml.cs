@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Services.Interface;
@@ -37,6 +37,43 @@ namespace PRN222_Final_Project.Pages.Manager
             {
 
             }
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(IFormCollection form)
+        {
+            try
+            {
+                int.TryParse(form["userRole"], out int roleId);
+                int.TryParse(form["userId"], out int userID);
+                Models.User user = new Models.User
+                {
+                    Username = form["userName"],
+                    Email = form["userEmail"],
+                    Address = form["userAddress"],
+                    RoleId = roleId,
+                    Password = form["userPassword"]
+                };
+
+                if (userID > 0)
+                {
+                    user.UserId = userID;
+                    await _userService.UpdateAsync(user);
+                    AlertMessage = "Chỉnh sửa người dùng thành công";
+                }
+                else
+                {
+                    await _userService.AddAsync(user);
+                    AlertMessage = "Thêm người dùng thành công";
+                }
+            }
+            catch (Exception e)
+            {
+                AlertMessage = e.Message;
+                await OnGetAsync(int.Parse(form["crrpage"]));
+                return Page();
+            }
+            await OnGetAsync(int.Parse(form["crrpage"]));
             return Page();
         }
     }

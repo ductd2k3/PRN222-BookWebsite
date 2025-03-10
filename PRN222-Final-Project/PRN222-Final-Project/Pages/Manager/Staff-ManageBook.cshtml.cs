@@ -76,13 +76,13 @@ namespace PRN222_Final_Project.Pages.Manager
                     await _bookService.AddAsync(book);
                     AlertMessage = "Thêm thành công";
                 }
-                await OnGetAsync();
+                await OnGetAsync(int.Parse(form["crrpage"]));
                 
                 return Page();
             }
             catch (Exception ex)
             {
-                await OnGetAsync();
+                await OnGetAsync(int.Parse(form["crrpage"]));
                 return Page();
             }
         }
