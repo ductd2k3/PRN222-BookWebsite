@@ -1,0 +1,48 @@
+﻿.main-content {
+    margin-left: 120px;
+    padding: 20px;
+}
+
+.header {
+    background: var(--primary-gradient);
+    color: var(--text-color);
+    padding: 15px 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-neon);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category-management {
+    background: var(--light-bg);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-neon);
+    margin-top: 20px;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+    .search-bar input {
+        width: 300px;
+    }
+
+.modal-content {
+    border-radius: 15px;
+}
+
+.btn-add {
+    background: var(--neon-orange);
+    border: none;
+}
+
+.btn-edit {
+    background: #008CBA;
+    border: none;
+}
