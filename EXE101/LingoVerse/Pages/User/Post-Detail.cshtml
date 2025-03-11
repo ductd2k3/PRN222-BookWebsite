@@ -8,20 +8,8 @@
 <!-- Main Content -->
 <div class="container mt-4">
     <div class="row">
-        <!-- Left Sidebar Ads -->
-        <div class="col-lg-2 d-none d-lg-block">
-            <div class="ad-space side-ad">
-                <p>Quảng cáo 160x600</p>
-            </div>
-        </div>
-
         <!-- Article Content -->
-        <div class="col-lg-8">
-            <!-- Top Ad Space -->
-            <div class="ad-space">
-                <p>Quảng cáo 728x90</p>
-            </div>
-
+        <div class="col-lg-6">
             <div class="article-container">
                 <h1 class="article-title">AI Breakthrough in 2049</h1>
                 <div class="article-meta">
@@ -30,10 +18,13 @@
                     <span><i class="fas fa-eye"></i> 1,234 views</span> |
                     <span><i class="fas fa-graduation-cap"></i> Level: Intermediate</span>
                 </div>
-                <img src="https://via.placeholder.com/800x400" class="article-image" alt="Hình minh họa">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&w=800" class="article-image" alt="Hình minh họa">
                 <div class="article-content">
                     <p>Artificial Intelligence (AI) is entering a new era where machines not only assist humans but also shape the future. In 2049, breakthroughs show that AI can learn, create, and even make decisions for humans in many fields.</p>
                     <p>From self-driving cities to personalized education, the possibilities are endless. This article explores how AI is transforming our world.</p>
+                    <!-- Nội dung dài hơn để kiểm tra overflow -->
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                 </div>
                 <div class="share-buttons">
                     <span>Share: </span>
@@ -41,15 +32,14 @@
                     <a href="#" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
                     <a href="#" title="Share on LinkedIn"><i class="fab fa-linkedin"></i></a>
                 </div>
+            </div>
+        </div>
 
-                <!-- Mobile Ad (xen kẽ trước câu hỏi) -->
-                <div class="ad-space mobile-ad">
-                    <p>Quảng cáo 320x100 (Mobile)</p>
-                </div>
-
-                <!-- Questions Section -->
-                <div class="questions-section">
-                    <h5>Comprehension Questions</h5>
+        <!-- Questions Section -->
+        <div class="col-lg-6">
+            <div class="questions-container">
+                <h5>Comprehension Questions</h5>
+                <div class="questions-section">                  
                     <form id="quiz-form">
                         <div class="question-item" data-correct="q1b">
                             <p>1. What is the main topic of the article?</p>
@@ -83,23 +73,59 @@
                             </div>
                             <div class="result" id="result2"></div>
                         </div>
+                        <!-- Thêm câu hỏi để kiểm tra overflow -->
+                        <div class="question-item" data-correct="q3a">
+                            <p>3. What is one application of AI mentioned?</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q3" id="q3a" value="q3a">
+                                <label class="form-check-label" for="q3a">A. Self-driving cities</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q3" id="q3b" value="q3b">
+                                <label class="form-check-label" for="q3b">B. Time travel machines</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q3" id="q3c" value="q3c">
+                                <label class="form-check-label" for="q3c">C. Space colonization</label>
+                            </div>
+                            <div class="result" id="result3"></div>
+                        </div>
                         <button type="button" id="check-answers" class="btn">Check Answers</button>
                         <div id="score"></div>
                     </form>
                 </div>
             </div>
-
-            <!-- Bottom Ad Space -->
-            <div class="ad-space">
-                <p>Quảng cáo 728x90</p>
-            </div>
-        </div>
-
-        <!-- Right Sidebar Ads -->
-        <div class="col-lg-2 d-none d-lg-block">
-            <div class="ad-space side-ad">
-                <p>Quảng cáo 160x600</p>
-            </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('check-answers').addEventListener('click', function () {
+        const questions = document.querySelectorAll('.question-item');
+        let score = 0;
+        const totalQuestions = questions.length;
+
+        questions.forEach((question, index) => {
+            const correctAnswer = question.getAttribute('data-correct');
+            const selectedAnswer = question.querySelector('input[type="radio"]:checked');
+            const resultDiv = document.getElementById(`result${index + 1}`);
+
+            if (selectedAnswer) {
+                if (selectedAnswer.value === correctAnswer) {
+                    resultDiv.textContent = 'Correct!';
+                    resultDiv.className = 'result correct';
+                    score++;
+                } else {
+                    resultDiv.textContent = `Incorrect! Correct answer: ${question.querySelector(`label[for="${correctAnswer}"]`).textContent}`;
+                    resultDiv.className = 'result incorrect';
+                }
+            } else {
+                resultDiv.textContent = 'Please select an answer!';
+                resultDiv.className = 'result incorrect';
+            }
+            resultDiv.style.display = 'block';
+        });
+
+        document.getElementById('score').textContent = `Score: ${score}/${totalQuestions}`;
+    });
+</script>

@@ -1,4 +1,124 @@
 ﻿@page
+@{
+    Layout = "_AdminLayout";
+}
 @model LingoVerse.Pages.Manager.Admin_ManageLevelModel
 @{
 }
+<head>
+    <link rel="stylesheet" href="~/css/Manage_Language.css" asp-append-version="true" />
+</head>
+<!-- Language List -->
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title">Danh sách ngôn ngữ</h5>
+                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addLanguageModal">
+                    <i class="fas fa-plus me-2"></i> Thêm ngôn ngữ
+                </button>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cấp độ</th>
+                        <th>Miêu tả</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Cấp 1</td>
+                        <td>Dành cho những người mới bắt đầu học</td>
+                        <td>
+                            <button class="btn btn-custom btn-sm" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Cấp 2</td>
+                        <td>Dành cho những người đã học một thời gian</td>
+                        <td>
+                            <button class="btn btn-custom btn-sm" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Cấp 3</td>
+                        <td>Dành cho những người học lâu năm</td>
+                        <td>
+                            <button class="btn btn-custom btn-sm" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm Ngôn Ngữ -->
+<div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLanguageModalLabel">Thêm ngôn ngữ mới</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="addLanguageName" class="form-label">Tên ngôn ngữ</label>
+                        <input type="text" class="form-control" id="addLanguageName" placeholder="Nhập tên ngôn ngữ">
+                    </div>
+                    <div class="mb-3">
+                        <label for="addLanguageCode" class="form-label">Mã ngôn ngữ</label>
+                        <input type="text" class="form-control" id="addLanguageCode" placeholder="Nhập mã ngôn ngữ">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-custom">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sửa Ngôn Ngữ -->
+<div class="modal fade" id="editLanguageModal" tabindex="-1" aria-labelledby="editLanguageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editLanguageModalLabel">Sửa ngôn ngữ</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="editLanguageName" class="form-label">Tên ngôn ngữ</label>
+                        <input type="text" class="form-control" id="editLanguageName" value="Tiếng Anh">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editLanguageCode" class="form-label">Mã ngôn ngữ</label>
+                        <input type="text" class="form-control" id="editLanguageCode" value="english">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-custom">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+</div>
