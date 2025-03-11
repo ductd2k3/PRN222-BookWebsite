@@ -1,0 +1,43 @@
+﻿body {
+    background: linear-gradient(135deg, #0d1b2a, #1b263b);
+    color: #e0e1dd;
+    font-family: 'Arial', sans-serif;
+}
+
+.sidebar {
+    background: #1b263b;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    padding: 20px;
+    box-shadow: 2px 0 10px rgba(65, 90, 119, 0.6);
+}
+
+    .sidebar .nav-link {
+        color: #e0e1dd;
+        padding: 10px 15px;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+
+
+@media (max-width: 991px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}

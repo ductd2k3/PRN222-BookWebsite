@@ -1,4 +1,161 @@
 ﻿@page
+@{
+    Layout = "_AdminLayout";
+}
 @model LingoVerse.Pages.Manager.Admin_DashboardModel
 @{
 }
+<style>
+    body {
+        background: linear-gradient(135deg, #0d1b2a, #1b263b);
+        color: #e0e1dd;
+        font-family: 'Arial', sans-serif;
+    }
+    .main-content {
+        margin-left: 250px;
+        padding: 20px;
+    }
+
+    .header {
+        background: linear-gradient(90deg, #1b263b 0%, #415a77 50%, #778da9 100%);
+        padding: 15px 20px;
+        box-shadow: 0 5px 15px rgba(65, 90, 119, 0.6);
+        margin-bottom: 20px;
+    }
+
+    .card {
+        background: #1b263b;
+        border: none;
+        border-radius: 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        margin-bottom: 20px;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(119, 141, 169, 0.5);
+        }
+
+    .card-title {
+        color: #00b4d8;
+    }
+
+    .stat-card {
+        padding: 20px;
+        text-align: center;
+    }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: #00b4d8;
+        }
+
+        .stat-card p {
+            color: #e0e1dd; /* Đổi màu chữ số thành sáng để dễ nhìn */
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+
+    .table {
+        background: #1b263b;
+        color: #e0e1dd;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+        .table th {
+            background: #415a77;
+            color: #fff;
+        }
+
+        .table td {
+            border-top: 1px solid #778da9;
+        }
+
+    .btn-custom {
+        background: #00b4d8;
+        border: none;
+        border-radius: 20px;
+        transition: background 0.3s;
+    }
+
+        .btn-custom:hover {
+            background: #4361ee;
+        }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <i class="fas fa-users"></i>
+                <h5 class="card-title mt-2">Người dùng</h5>
+                <p>1,245</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <i class="fas fa-newspaper"></i>
+                <h5 class="card-title mt-2">Bài báo</h5>
+                <p>342</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <i class="fas fa-eye"></i>
+                <h5 class="card-title mt-2">Lượt xem</h5>
+                <p>15,673</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <i class="fas fa-dollar-sign"></i>
+                <h5 class="card-title mt-2">Doanh thu</h5>
+                <p>$2,450</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Articles Table -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Bài báo gần đây</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tiêu đề</th>
+                        <th>Ngôn ngữ</th>
+                        <th>Cấp độ</th>
+                        <th>Ngày đăng</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>AI Breakthrough in 2049</td>
+                        <td>English</td>
+                        <td>Intermediate</td>
+                        <td>08/03/2025</td>
+                        <td>
+                            <button class="btn btn-custom btn-sm"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Une Nouvelle Ère d'IA</td>
+                        <td>French</td>
+                        <td>Beginner</td>
+                        <td>07/03/2025</td>
+                        <td>
+                            <button class="btn btn-custom btn-sm"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
