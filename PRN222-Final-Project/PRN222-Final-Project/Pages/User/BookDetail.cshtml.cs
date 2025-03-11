@@ -29,7 +29,7 @@ namespace PRN222_Final_Project.Pages.User
             ProductRelated = (await _product.GetAllAsync())
                     .Where(x => x.CategoryId == bookCatrgoryId)
                     .OrderByDescending(p => p.Price)
-                    .Take(8)
+                    .Take(4)
                     .ToList();
             return Page();
         }

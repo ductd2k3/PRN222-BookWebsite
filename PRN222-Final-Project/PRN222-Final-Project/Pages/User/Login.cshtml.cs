@@ -37,13 +37,16 @@ namespace PRN222_Final_Project.Pages.User
                 ErrorMessage = "Tài khoản không có quyền truy cập!";
                 return Page();
             }
+            // Set sesion
+            HttpContext.Session.SetString("UserID", user.UserId.ToString());
+            HttpContext.Session.SetString("UserName", user.FullName);
 
             var role = await _genericService.GetByIdAsync(user.RoleId.Value);
 
             return role.RoleName switch
             {
                 "Admin" => RedirectToPage("/Manager/Admin-Dashboard"),
-                "Customer" => RedirectToPage(""),
+                "Customer" => RedirectToPage("/User/Home"),
                 "Staff" => RedirectToPage("/Manager/Staff-ManageBook"),
                 _ => Page()
             };
