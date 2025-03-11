@@ -9,11 +9,13 @@ namespace PRN222_Final_Project.Pages.User
     {
         private readonly IGenericService<Category> _categoryService;
         private readonly IGenericService<Product> _product;
+        private readonly IGenericService<Cart> _cart;
 
-        public HomeModel(IGenericService<Category> categoryService, IGenericService<Product> product)
+        public HomeModel(IGenericService<Category> categoryService, IGenericService<Product> product , IGenericService<Cart> cart)
         {
             _categoryService = categoryService;
             _product = product;
+            _cart = cart;
         }
 
         public int? SelectedCategoryId { get; set; }
@@ -21,6 +23,7 @@ namespace PRN222_Final_Project.Pages.User
         public IEnumerable<Category> Categories { get; set; }
         public IEnumerable<Product> Product { get; set; }
         public IEnumerable<Product> ProductSearch { get; set; }
+        public Cart ProductCart { get; set; }
 
         public async Task OnGetDefault()
         {
@@ -40,8 +43,9 @@ namespace PRN222_Final_Project.Pages.User
                    .ToList();
         }
 
-        public async Task<IActionResult> OnGetFilteredAsync(int? categoryId, string priceRange)
+        public async Task<IActionResult> OnGetFilteredAsync(int? categoryId, string priceRange, int pageNumber = 1)
         {
+            int pageSize = 6;
             var products = await _product.GetAllAsync();
             await OnGetDefault();
             SelectedCategoryId = categoryId;
@@ -70,10 +74,50 @@ namespace PRN222_Final_Project.Pages.User
                         break;
                 }
             }
+            int totalProducts = products.Count();
+            ProductSearch = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-            ProductSearch = products.ToList();
+            ViewData["PageNumber"] = pageNumber;
+            ViewData["TotalPages"] = (int)Math.Ceiling((double)totalProducts / pageSize);
+            ViewData["SelectedCategoryId"] = categoryId;
+            ViewData["SelectedPriceRange"] = priceRange;
+
             return Page();
         }
+
+        // Add cart
+        public async Task<IActionResult> OnGetAddToCartAsync(int? productID, int quantity)
+        {
+            string userIDStr = HttpContext.Session.GetString("UserID");
+            if (string.IsNullOrEmpty(userIDStr) || !int.TryParse(userIDStr, out int userID))
+            {
+                return RedirectToPage("/User/Login");
+            }
+            var cartItems = await _cart.GetAllAsync();
+            var existingCart = cartItems.FirstOrDefault(x => x.ProductId == productID && x.UserId == userID);
+
+            if (existingCart == null) 
+            {
+                Cart newCart = new Cart
+                {
+                    ProductId = productID,
+                    UserId = userID,
+                    Quantity = quantity,
+                    AddedDate = DateTime.Now
+                };
+
+                await _cart.AddAsync(newCart);
+            }
+            else
+            {
+                existingCart.Quantity += quantity;
+                await _cart.UpdateAsync(existingCart);
+            }
+
+            return RedirectToPage("/User/Cart");
+        }
+
+
 
     }
 }
