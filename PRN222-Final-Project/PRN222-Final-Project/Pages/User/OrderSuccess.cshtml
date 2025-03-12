@@ -1,0 +1,81 @@
+﻿@page
+@model PRN222_Final_Project.Pages.User.CartModel
+@{
+    ViewData["Title"] = "Mua hàng thành công";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/Cart.css" asp-append-version="true" />
+    <style>
+        .success-container {
+            text-align: center;
+            padding: 40px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            color: #28a745;
+        }
+
+        .success-message {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .order-details {
+            font-size: 16px;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        .btn-group {
+            margin-top: 20px;
+        }
+
+        .btn-custom {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn-home {
+            background-color: #007bff;
+        }
+
+            .btn-home:hover {
+                background-color: #0056b3;
+            }
+
+        .btn-orders {
+            background-color: #28a745;
+        }
+
+            .btn-orders:hover {
+                background-color: #1e7e34;
+            }
+    </style>
+</head>
+
+<div class="success-container">
+    <div class="success-icon">✅</div>
+    <div class="success-message">Cảm ơn bạn đã mua hàng!</div>
+    <p class="order-details">Đơn hàng của bạn đã được xác nhận và sẽ sớm được giao đến bạn.</p>
+
+    <div class="btn-group">
+        <a href="/User/Home" class="btn-custom btn-home">🏠 Trang chủ</a>
+        <a href="/User/Orders" class="btn-custom btn-orders">📋 Xem đơn hàng</a>
+    </div>
+</div>

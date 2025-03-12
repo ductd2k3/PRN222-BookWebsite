@@ -167,7 +167,5 @@ namespace PRN222_Final_Project.Pages.User
 
             return RedirectToPage("/User/OrderSuccess");
         }
-
-
     }
 }

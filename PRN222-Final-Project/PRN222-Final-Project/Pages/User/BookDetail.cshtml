@@ -24,7 +24,7 @@
                 <span class="ms-2 text-muted">(4.2/5 - 150 đánh giá)</span>
             </div>
             <p class="text-success fw-bold fs-3">@(Model.Book.Price.ToString("N0") + " đ") <span class="text-muted text-decoration-line-through fs-5">@(((double)Model.Book.Price * 1.15).ToString("N0") + " đ")</span></p>
-            <p class="mt-3"><strong>Thể loại:</strong> Khoa học viễn tưởng</p>
+            <p class="mt-3"><strong>Thể loại:</strong> @(Model.Book.Category?.CategoryName ?? "Không xác định")</p>
             <p><strong>Số trang:</strong></p>
             <p><strong>Mô tả : </strong>@(Model.Book.Description)</p>
             <p><strong>Số lượng : </strong>@(Model.Book.Stock)</p>

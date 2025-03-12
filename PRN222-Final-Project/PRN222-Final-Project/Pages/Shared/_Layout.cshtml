@@ -32,14 +32,44 @@
                     <input class="header-form-control me-2" type="search" placeholder="Tìm sách..." aria-label="Search">
                     <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button>
                 </form>
+                @{
+                    var userName = Context.Session.GetString("UserName");
+                }
+
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link cart-icon" href="/User/Cart">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-badge">2</span>
                         </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="/User/Login"><i class="fas fa-user"></i></a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            @if (!string.IsNullOrEmpty(userName))
+                            {
+                                <span>@userName</span> 
+                            }
+                            else
+                            {
+                                <i class="fas fa-user"></i>
+                            }
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            @if (!string.IsNullOrEmpty(userName))
+                            {
+                                <li><a class="dropdown-item" href="/User/Profile">Tài khoản</a></li>
+                                <li><a class="dropdown-item" href="/User/OrderHistory">Lịch sử mua hàng</a></li>
+                                <li>
+                                    <form method="post" asp-page="/User/Logout">
+                                        <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li><a class="dropdown-item" href="/User/Login">Đăng nhập</a></li>
+                            }
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
