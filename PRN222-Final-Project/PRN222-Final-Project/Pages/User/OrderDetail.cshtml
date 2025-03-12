@@ -5,61 +5,95 @@
 <head>
     <link rel="stylesheet" href="~/css/OrderDetail.css" asp-append-version="true" />
 </head>
-<!-- Order Detail Section -->
 <div class="container order-detail-container">
-    <div class="order-header">
-        <h2 class="order-id">Đơn hàng #DH001</h2>
-        <span class="order-status completed">Đã giao</span>
-    </div>
+    @if (Model.inforOrder != null)
+    {
+        <div class="order-header">
+            <h2 class="order-id">Đơn hàng #DH@(Model.inforOrder.OrderId)</h2>
+            <span class="order-status completed">Trạng thái đơn : @(Model.inforOrder.OrderStatusName)</span>
+            <a href="/User/OrderHistory" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
 
-    <!-- Order Info -->
-    <div class="order-info">
-        <div class="order-info-item">
-            <label>Ngày đặt hàng:</label>
-            <p>01/03/2025</p>
         </div>
-        <div class="order-info-item">
-            <label>Địa chỉ giao hàng:</label>
-            <p>123 Đường Sách, Quận 1, TP. Hồ Chí Minh</p>
+        <div class="order-info">
+            <div class="order-info-item">
+                <label>Ngày đặt hàng:</label>
+                <p>@(Model.inforOrder.OrderDate)</p>
+            </div>
+            <div class="order-info-item">
+                <label>Địa chỉ giao hàng:</label>
+                <p>@(Model.inforOrder.Address)</p>
+            </div>
         </div>
-    </div>
-
+    }
+    else
+    {
+        <div class="order-header">
+            <h2 class="order-id">Đơn hàng #</h2>
+            <span class="order-status completed">Không có trạng thái</span>
+        </div>
+        <div class="order-info">
+            <div class="order-info-item">
+                <label>Ngày đặt hàng:</label>
+                <p>N/A</p>
+            </div>
+            <div class="order-info-item">
+                <label>Địa chỉ giao hàng:</label>
+                <p>N/A</p>
+            </div>
+        </div>
+    }
     <!-- Order Products -->
     <h3 class="mt-4 mb-3">Sản phẩm trong đơn hàng</h3>
     <div class="order-products">
-        <!-- Product 1 -->
-        <div class="order-product">
-            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794" alt="Book 1">
-            <div class="order-product-info">
-                <h5 class="order-product-title">Cuốn Sách Tương Lai</h5>
-                <p>Số lượng: 1</p>
-                <p class="order-product-price">150.000đ</p>
-            </div>
-        </div>
-        <!-- Product 2 -->
-        <div class="order-product">
-            <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f" alt="Book 2">
-            <div class="order-product-info">
-                <h5 class="order-product-title">Hành Trình Vũ Trụ</h5>
-                <p>Số lượng: 2</p>
-                <p class="order-product-price">500.000đ</p>
-            </div>
-        </div>
-    </div>
+        @if (Model.listOrderDetail != null && Model.listOrderDetail.Any())
+        {
 
-    <!-- Order Summary -->
-    <div class="order-summary">
-        <div class="order-summary-item">
-            <span>Tạm tính:</span>
-            <span>650.000đ</span>
-        </div>
-        <div class="order-summary-item">
-            <span>Phí vận chuyển:</span>
-            <span>30.000đ</span>
-        </div>
-        <div class="order-summary-item total">
-            <span>Tổng cộng:</span>
-            <span>680.000đ</span>
+            @foreach (var item in Model.listOrderDetail)
+            {
+                <div class="cart-items">
+                    <div class="order-product">
+                        <img src="@(item.Image)" alt="@(item.PrudctName)">
+                        <div class="order-product-info">
+                            <h5 class="order-product-title">@(item.PrudctName)</h5>
+                            <p>Số lượng: @(item.Quantity)</p>
+                            <p class="order-product-price">@(item.Price.ToString("N0"))</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="order-summary">
+            @if (Model.listOrderDetail != null && Model.listOrderDetail.Count > 0)
+            {
+                <div class="order-summary-item">
+                    <span>Tạm tính:</span>
+                    <span>@((Model.listOrderDetail.Sum(x => x.Quantity * x.Price)).ToString("N0") + " đ")</span>
+                </div>
+                <div class="order-summary-item">
+                    <span>Phí vận chuyển:</span>
+                    <span>Miễn phí</span>
+                </div>
+                <div class="order-summary-item total">
+                    <span>Tổng cộng:</span>
+                    <span>@((Model.listOrderDetail.Sum(x => x.Quantity * x.Price)).ToString("N0") + " đ")</span>
+                </div>
+            }
+            else
+            {
+                <div class="order-summary-item">
+                    <span>Tạm tính:</span>
+                    <span>650.000đ</span>
+                </div>
+                <div class="order-summary-item">
+                    <span>Phí vận chuyển:</span>
+                    <span>30.000đ</span>
+                </div>
+                <div class="order-summary-item total">
+                    <span>Tổng cộng:</span>
+                    <span>680.000đ</span>
+                </div>
+            }
         </div>
     </div>
-</div>

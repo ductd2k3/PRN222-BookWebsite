@@ -165,7 +165,7 @@ namespace PRN222_Final_Project.Pages.User
                 await _cart.DeleteAsync(item.CartId);
             }
 
-            return RedirectToPage("/User/Home");
+            return RedirectToPage("/User/OrderSuccess");
         }
     }
 }

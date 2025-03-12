@@ -21,10 +21,6 @@ namespace PRN222_Final_Project.Pages.User
         public async Task<IActionResult> OnGetAsync(int id)
         {
             Book = await _product.GetByIdAsync(id);
-            if (Book == null)
-            {
-                return NotFound();
-            }
             int? bookCatrgoryId = Book.CategoryId;
             ProductRelated = (await _product.GetAllAsync())
                     .Where(x => x.CategoryId == bookCatrgoryId)

@@ -30,7 +30,7 @@ namespace PRN222_Final_Project.Pages.User
             Categories = await _categoryService.GetAllAsync();
             Product = (await _product.GetAllAsync())
                .OrderByDescending(p => p.Price)
-               .Take(8)
+               .Take(4)
                .ToList();
         }
 
