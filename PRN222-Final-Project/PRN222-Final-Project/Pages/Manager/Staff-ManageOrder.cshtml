@@ -1,0 +1,75 @@
+﻿@page
+@model PRN222_Final_Project.Pages.Manager.Staff_ManageOrderModel
+@{
+}
+@{
+    Layout = "_AdminLayout";
+}
+<head>
+    <link rel="stylesheet" href="~/css/staff_manageorder.css" asp-append-version="true" />
+</head>
+<div>
+    <div class="header">
+        <span>Quản Lý Đơn Hàng</span>
+        <span class="user-info"><i class="fas fa-user me-2"></i> Staff</span>
+    </div>
+
+    <!-- Order Management -->
+    <div class="order-management">
+        <div class="search-filter-bar">
+            <form method="get" class="d-flex gap-2 align-items-center">
+                <input type="text" asp-for="@Model.OrderId" class="form-control" placeholder="Tìm kiếm đơn hàng..." id="searchInput">
+                <select class="form-select" id="statusFilter" asp-for="@Model.StatusId" onchange="this.form.submit()">
+                    <option value="">Tất cả trạng thái</option>
+                    @foreach (var status in Model.Statuss)
+                    {
+                        <option value="@(status.StatusId)">@(status.StatusName)</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Tìm</button>
+            </form>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Mã Đơn</th>
+                    <th>Tổng Tiền</th>
+                    <th>Ngày Đặt</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody id="orderTable">
+                <!-- Dữ liệu mẫu -->
+                @foreach(var order in Model.Orders)
+                {
+                    <tr>
+                        <td>@(order.OrderId)</td>
+                        <td>@(order.TotalAmount)</td>
+                        <td>@(order.OrderDate)</td>
+                        <td>
+                            @(order.Status.StatusName)
+                        </td>
+                        <td>
+                            <a href="/Manager/Staff-ManageOrderDetail?orderId=@order.OrderId" class="btn btn-detail btn-sm">
+                                <i class="fas fa-eye"></i> Chi Tiết
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#" onclick="changePage('prev')">Trước</a></li>
+                <li class="page-item"><a class="page-link" href="#" onclick="changePage(1)">1</a></li>
+                <li class="page-item"><a class="page-link" href="#" onclick="changePage(2)">2</a></li>
+                <li class="page-item"><a class="page-link" href="#" onclick="changePage(3)">3</a></li>
+                <li class="page-item"><a class="page-link" href="#" onclick="changePage('next')">Sau</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

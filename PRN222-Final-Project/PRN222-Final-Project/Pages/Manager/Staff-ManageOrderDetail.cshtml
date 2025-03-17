@@ -1,0 +1,85 @@
+﻿@page
+@model PRN222_Final_Project.Pages.Manager.Staff_ManageOrderDetailModel
+@{
+    Layout = "_AdminLayout";
+}
+<head>
+    <link rel="stylesheet" href="~/css/staff_manageorderdetail.css" asp-append-version="true" />
+</head>
+<div>
+    <div class="header">
+        <span>Chi Tiết Đơn Hàng #00123</span>
+        <span class="user-info"><i class="fas fa-user me-2"></i> Staff</span>
+    </div>
+
+    <!-- Order Detail -->
+    <div class="order-detail">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="/Manager/Staff-ManageOrder" class="btn btn-back btn-sm">
+                <i class="fas fa-arrow-left me-2"></i> Quay Lại Danh Sách
+            </a>
+            <span class="status-badge" style="background: #28a745;">@(Model.Order.Status?.StatusName)</span>
+        </div>
+
+        <!-- Thông tin đơn hàng -->
+        <div class="order-info">
+            <h5><i class="fas fa-info-circle me-2"></i> Thông Tin Đơn Hàng</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Mã Đơn:</strong> #@(Model.Order.OrderId.ToString("D4"))</p>
+                    <p><strong>Khách Hàng:</strong> @(Model.Order.User?.Username)</p>
+                    <p><strong>Thông Tin Giao Hàng:</strong> @(Model.Order.ShippingAddress)</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Ngày Đặt Hàng:</strong> @(Model.Order.OrderDate)</p>
+                    <p><strong>Tổng Tiền:</strong> @(Model.Order.TotalAmount.ToString("N0"))đ</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danh sách sản phẩm -->
+        <div class="order-items mt-4">
+            <h5><i class="fas fa-shopping-bag me-2"></i> Danh Sách Sản Phẩm</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Số Lượng</th>
+                        <th>Đơn Giá</th>
+                        <th>Thành Tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var od in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>@(od.ProductId?.ToString("D4"))</td>
+                            <td>@(od.Product?.Title)</td>
+                            <td>@(od.Quantity)</td>
+                            <td>@(od.UnitPrice.ToString("N0"))đ</td>
+                            <td>@((od.UnitPrice*od.Quantity).ToString("N0"))đ</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Tổng Cộng:</strong></td>
+                        <td><strong>@(Model.Order.TotalAmount.ToString("N0"))đ</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Hành động -->
+        <form method="POST">
+            <input type="hidden" name="orderId" value="@(Model.Order.OrderId)">
+            <div class="order-actions d-flex justify-content-end gap-2">
+                <button type="submit" class="btn btn-success" name="status" value="confirm">
+                    <i class="fas fa-check me-2"></i> Xác Nhận Đơn
+                </button>
+                <button type="submit" class="btn btn-danger" name="status" value="reject">
+                    <i class="fas fa-times me-2"></i> Hủy Đơn
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
