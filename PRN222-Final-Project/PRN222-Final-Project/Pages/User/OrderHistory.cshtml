@@ -5,9 +5,9 @@
 <head>
     <link rel="stylesheet" href="~/css/OrderHistory.css" asp-append-version="true" />
 </head>
-<!-- Order History Section -->
 <div class="container order-history-container">
     <h2 class="text-center mb-4">Lịch Sử Đơn Hàng</h2>
+
     <form method="GET" action="/User/OrderHistory" class="container mt-4">
         <div class="row align-items-center">
             <div class="col-md-4">
@@ -35,50 +35,58 @@
         </div>
     </form>
 
-
     <div class="order-items">
         @if (Model.ListOrderHistory != null && Model.ListOrderHistory.Any())
         {
             @foreach (var item in Model.ListOrderHistory)
             {
-                <div class="order-item" data-status="completed">
+                <div class="order-item">
                     <div class="order-info">
                         <p class="order-id">Đơn hàng #DH@(item.OrderId)</p>
                         <div class="order-date-status">
                             <p class="order-date">Ngày đặt: @(item.OrderDate)</p>
-                            <span class="order-status completed">@(item.OrderStatusName)</span>
+                            <span class="order-status">@(item.OrderStatusName)</span>
                         </div>
-                        <p class="order-total">@(item.Amount.ToString("N0"))</p>
+                        <p class="order-total">@(item.Amount.ToString("N0")) đ</p>
                     </div>
                     <a class="btn btn-details" asp-page="/User/OrderDetail" asp-route-orderID="@item.OrderId">Xem chi Tiết</a>
                 </div>
             }
-
         }
         else
         {
             <p class="text-center">Lịch sử mua hàng trống! <a href="/Products">Mua hàng ngay</a>.</p>
         }
-        <!-- Order Item 1 -->
-        <!-- Pagination -->
-        <nav aria-label="Order History Pagination">
-            <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
+    </div>
+    <nav aria-label="Order History Pagination">
+        <ul class="pagination justify-content-center">
+            @if (Model.TotalPages > 1)
+            {
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?statusFilter=@(Model.StatusFilter)&pageNumber=@(Model.CurrentPage - 1)" aria-label="Previous">
                         <span aria-hidden="true">«</span>
                     </a>
                 </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="?statusFilter=@(Model.StatusFilter)&pageNumber=@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="?statusFilter=@(Model.StatusFilter)&pageNumber=@(Model.CurrentPage + 1)" aria-label="Next">
                         <span aria-hidden="true">»</span>
                     </a>
                 </li>
-            </ul>
-        </nav>
-    </div>
+            }
+        </ul>
+    </nav>
+</div>
+
+
+
     <script>
         debugger
         $(document).ready(function () {

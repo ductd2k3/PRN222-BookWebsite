@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Services.Interface;
@@ -48,6 +48,7 @@ namespace PRN222_Final_Project.Pages.User
             int pageSize = 6;
             var products = await _product.GetAllAsync();
             await OnGetDefault();
+
             SelectedCategoryId = categoryId;
             SelectedPriceRange = priceRange;
 
@@ -74,6 +75,7 @@ namespace PRN222_Final_Project.Pages.User
                         break;
                 }
             }
+
             int totalProducts = products.Count();
             ProductSearch = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
@@ -84,6 +86,7 @@ namespace PRN222_Final_Project.Pages.User
 
             return Page();
         }
+
 
         // Add cart
         public async Task<IActionResult> OnGetAddToCartAsync(int? productID, int quantity)

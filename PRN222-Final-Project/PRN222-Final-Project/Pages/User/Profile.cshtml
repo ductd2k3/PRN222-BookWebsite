@@ -1,66 +1,61 @@
 ﻿@page
 @model PRN222_Final_Project.Pages.User.ProfileModel
 @{
+    ViewData["Title"] = "Hồ Sơ Người Dùng";
 }
+
 <head>
-    <link rel="stylesheet" href="~/css/bookdetail.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true" />
 </head>
-<!-- Profile Section -->
+
 <div class="container profile-container">
     <div class="profile-header">
         <h2>Hồ Sơ Người Dùng</h2>
-        <button class="btn-edit">Chỉnh Sửa</button>
-        <button class="btn-save">Lưu</button>
+        <button id="editBtn" class="btn-edit">Chỉnh Sửa</button>
+        <button id="saveBtn" class="btn-save" style="display: none;">Lưu</button>
     </div>
-    <div class="profile-info">
-        <div class="profile-info-item">
-            <label>Họ và tên:</label>
-            <p id="name">Nguyễn Văn A</p>
-            <input type="text" class="form-input" id="nameInput" value="Nguyễn Văn A">
-        </div>
-        <div class="profile-info-item">
-            <label>Email:</label>
-            <p id="email">nguyenvana@example.com</p>
-            <input type="email" class="form-input" id="emailInput" value="nguyenvana@example.com">
-        </div>
-        <div class="profile-info-item">
-            <label>Số điện thoại:</label>
-            <p id="phone">0123-456-789</p>
-            <input type="text" class="form-input" id="phoneInput" value="0123-456-789">
-        </div>
-        <div class="profile-info-item">
-            <label>Địa chỉ:</label>
-            <p id="address">123 Đường Sách, Quận 1, TP. Hồ Chí Minh</p>
-            <input type="text" class="form-input" id="addressInput" value="123 Đường Sách, Quận 1, TP. Hồ Chí Minh">
-        </div>
-    </div>
-</div>
-<script>
-    // Xử lý chỉnh sửa hồ sơ
-    const editBtn = document.querySelector('.btn-edit');
-    const saveBtn = document.querySelector('.btn-save');
-    const infoItems = document.querySelectorAll('.profile-info-item');
 
-    editBtn.addEventListener('click', function () {
-        infoItems.forEach(item => {
-            const p = item.querySelector('p');
-            const input = item.querySelector('.form-input');
-            p.style.display = 'none';
-            input.style.display = 'block';
-        });
-        editBtn.style.display = 'none';
-        saveBtn.style.display = 'inline-block';
+    <form method="post">
+        <div class="profile-info">
+            <div class="profile-info-item">
+                <label>Họ và tên:</label>
+                <p id="name">@Model.FullName</p>
+                <input type="text" class="form-input" id="nameInput" name="FullName" value="@Model.FullName" style="display: none;">
+            </div>
+            <div class="profile-info-item">
+                <label>Email:</label>
+                <p id="email">@Model.Email</p>
+                <input type="email" class="form-input" id="emailInput" name="Email" value="@Model.Email" readonly>
+            </div>
+            <div class="profile-info-item">
+                <label>Địa chỉ:</label>
+                <p id="address">@Model.Address</p>
+                <input type="text" class="form-input" id="addressInput" name="Address" value="@Model.Address" style="display: none;">
+            </div>
+            <div class="profile-info-item">
+                <label>Mật khẩu mới:</label>
+                <input type="password" class="form-input" id="newPasswordInput" name="NewPassword" placeholder="Nhập mật khẩu mới" style="display: none;">
+            </div>
+            <div class="profile-info-item">
+                <label>Xác nhận mật khẩu:</label>
+                <input type="password" class="form-input" id="confirmPasswordInput" name="ConfirmPassword" placeholder="Nhập lại mật khẩu" style="display: none;">
+            </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-save" style="display: none;">Lưu</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('editBtn').addEventListener('click', function () {
+        document.querySelectorAll('.profile-info-item p').forEach(p => p.style.display = 'none');
+        document.querySelectorAll('.form-input').forEach(input => input.style.display = 'block');
+        document.getElementById('editBtn').style.display = 'none';
+        document.getElementById('saveBtn').style.display = 'inline-block';
+        document.getElementById('submitBtn').style.display = 'inline-block';
     });
 
-    saveBtn.addEventListener('click', function () {
-        infoItems.forEach(item => {
-            const p = item.querySelector('p');
-            const input = item.querySelector('.form-input');
-            p.textContent = input.value;
-            p.style.display = 'block';
-            input.style.display = 'none';
-        });
-        editBtn.style.display = 'inline-block';
-        saveBtn.style.display = 'none';
+    document.getElementById('saveBtn').addEventListener('click', function () {
+        document.querySelector('form').submit();
     });
 </script>

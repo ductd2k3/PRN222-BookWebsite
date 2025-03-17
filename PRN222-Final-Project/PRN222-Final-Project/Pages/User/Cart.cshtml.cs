@@ -24,9 +24,9 @@ namespace PRN222_Final_Project.Pages.User
         }
 
         public List<CartViewModel> ListCart { get; set; }
-        public int PageSize { get; set; } = 5; // Số sản phẩm trên mỗi trang
+        public int PageSize { get; set; } = 3; 
         public int CurrentPage { get; set; }
-
+        public int TotalPages { get; set; }
         public async Task<IActionResult> OnGet(int pageNumber = 1)
         {
             string userIdString = HttpContext.Session.GetString("UserID");
@@ -38,24 +38,26 @@ namespace PRN222_Final_Project.Pages.User
             int userID = int.Parse(userIdString);
             var cartItems = await _cart.GetAllAsync();
             var products = await _product.GetAllAsync();
+            var filteredCart = (from cart in cartItems
+                                join product in products on cart.ProductId equals product.ProductId
+                                where cart.UserId == userID
+                                select new CartViewModel
+                                {
+                                    ProductId = cart.ProductId,
+                                    UserId = cart.UserId,
+                                    Quantity = cart.Quantity,
+                                    AddedDate = cart.AddedDate,
+                                    ProductName = product.Title,
+                                    Price = product.Price
+                                }).ToList();
+            TotalPages = (int)Math.Ceiling((double)filteredCart.Count / PageSize);
+            ListCart = filteredCart.Skip((pageNumber - 1) * PageSize).Take(PageSize).ToList();
 
-            ListCart = (from cart in cartItems
-                        join product in products on cart.ProductId equals product.ProductId
-                        where cart.UserId == userID
-                        select new CartViewModel
-                        {
-                            ProductId = cart.ProductId,
-                            UserId = cart.UserId,
-                            Quantity = cart.Quantity,
-                            AddedDate = cart.AddedDate,
-                            ProductName = product.Title,
-                            Price = product.Price
-                        }).ToList();
             CurrentPage = pageNumber;
-            ListCart = ListCart.Skip((pageNumber - 1) * PageSize).Take(PageSize).ToList();
 
             return Page();
         }
+
         public async Task<IActionResult> OnPostUpdateQuantity(int productId, int change)
         {
             string userIdString = HttpContext.Session.GetString("UserID");
