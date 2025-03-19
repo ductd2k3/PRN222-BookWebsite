@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Services.Interface;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace PRN222_Final_Project.Pages.User
@@ -22,7 +21,6 @@ namespace PRN222_Final_Project.Pages.User
         public string FullName { get; set; } = string.Empty;
 
         [BindProperty]
-        [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
         [BindProperty]
@@ -53,6 +51,7 @@ namespace PRN222_Final_Project.Pages.User
                 return NotFound();
             }
 
+            // Đổ dữ liệu vào form
             FullName = UserProfile.FullName;
             Email = UserProfile.Email;
             Address = UserProfile.Address;
@@ -85,10 +84,12 @@ namespace PRN222_Final_Project.Pages.User
 
             // Cập nhật thông tin
             userToUpdate.FullName = FullName;
+            userToUpdate.Email = Email;
             userToUpdate.Address = Address;
+
             if (!string.IsNullOrEmpty(NewPassword))
             {
-                userToUpdate.Password = NewPassword; // Cần hash mật khẩu trước khi lưu
+                userToUpdate.Password = NewPassword;
             }
 
             await _userService.UpdateAsync(userToUpdate);

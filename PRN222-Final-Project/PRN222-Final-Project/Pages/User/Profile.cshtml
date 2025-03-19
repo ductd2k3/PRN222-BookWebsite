@@ -22,20 +22,30 @@
                 <p id="name">@Model.FullName</p>
                 <input type="text" class="form-input" id="nameInput" name="FullName" value="@Model.FullName" style="display: none;">
             </div>
+
             <div class="profile-info-item">
                 <label>Email:</label>
                 <p id="email">@Model.Email</p>
                 <input type="email" class="form-input" id="emailInput" name="Email" value="@Model.Email" readonly>
             </div>
+
+            <div class="profile-info-item">
+                <label>Số điện thoại:</label>
+                <p id="phone">@Model.Phone</p>
+                <input type="text" class="form-input" id="phoneInput" name="Phone" value="@Model.Phone" style="display: none;">
+            </div>
+
             <div class="profile-info-item">
                 <label>Địa chỉ:</label>
                 <p id="address">@Model.Address</p>
                 <input type="text" class="form-input" id="addressInput" name="Address" value="@Model.Address" style="display: none;">
             </div>
+
             <div class="profile-info-item">
                 <label>Mật khẩu mới:</label>
                 <input type="password" class="form-input" id="newPasswordInput" name="NewPassword" placeholder="Nhập mật khẩu mới" style="display: none;">
             </div>
+
             <div class="profile-info-item">
                 <label>Xác nhận mật khẩu:</label>
                 <input type="password" class="form-input" id="confirmPasswordInput" name="ConfirmPassword" placeholder="Nhập lại mật khẩu" style="display: none;">

@@ -24,7 +24,7 @@ namespace PRN222_Final_Project.Pages.User
         }
 
         public List<CartViewModel> ListCart { get; set; }
-        public int PageSize { get; set; } = 3; 
+        public int PageSize { get; set; } = 3;
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
         public async Task<IActionResult> OnGet(int pageNumber = 1)
@@ -68,22 +68,38 @@ namespace PRN222_Final_Project.Pages.User
 
             int userID = int.Parse(userIdString);
             var cartItem = (await _cart.GetAllAsync()).FirstOrDefault(c => c.UserId == userID && c.ProductId == productId);
+            var product = await _product.GetByIdAsync(productId);
+
+            if (product == null)
+            {
+                TempData["ErrorMessage"] = "Sản phẩm không tồn tại!";
+                return RedirectToPage();
+            }
 
             if (cartItem != null)
             {
-                cartItem.Quantity += change;
-                if (cartItem.Quantity <= 0)
+                int newQuantity = cartItem.Quantity + change;
+
+                if (newQuantity > product.Stock)
+                {
+                    TempData["ErrorMessage"] = "Số lượng sản phẩm trong giỏ vượt quá số lượng còn lại!";
+                    return RedirectToPage();
+                }
+
+                if (newQuantity <= 0)
                 {
                     await _cart.DeleteAsync(cartItem.CartId);
                 }
                 else
                 {
+                    cartItem.Quantity = newQuantity;
                     await _cart.UpdateAsync(cartItem);
                 }
             }
 
             return RedirectToPage();
         }
+
         public async Task<IActionResult> OnPostRemoveItem(int productId)
         {
             string userIdString = HttpContext.Session.GetString("UserID");
@@ -160,6 +176,13 @@ namespace PRN222_Final_Project.Pages.User
                 };
 
                 await _orderDetail.AddAsync(orderDetail);
+                //Cập nhật số lượng tồn kho
+                var product = products.FirstOrDefault(p => p.ProductId == item.ProductId);
+                if (product != null)
+                {
+                    product.Stock -= item.Quantity ?? 0;
+                    await _product.UpdateAsync(product);
+                }
             }
             // Delete Cart
             foreach (var item in cartItems)
