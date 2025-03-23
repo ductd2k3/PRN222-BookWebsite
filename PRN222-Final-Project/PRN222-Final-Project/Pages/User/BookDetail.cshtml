@@ -28,9 +28,16 @@
             <p><strong>Số trang:</strong></p>
             <p><strong>Mô tả : </strong>@(Model.Book.Description)</p>
             <p><strong>Số lượng : </strong>@(Model.Book.Stock)</p>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-outline-secondary" onclick="changeQuantity(-1)">-</button>
+                <input type="number" id="quantityInput" class="form-control text-center" value="1" min="1" max="@Model.Book.Stock" style="width: 60px;">
+                <button type="button" class="btn btn-outline-secondary" onclick="changeQuantity(1)">+</button>
+            </div>
             <div class="d-flex gap-3 mt-4">
-                <button class="btn btn-buy">Thêm Vào Giỏ Hàng</button>
-                <button class="btn btn-outline">Mua Ngay</button>
+                <div class="d-flex gap-3 mt-4">
+                    <button class="btn btn-buy" onclick="addToCart(@Model.Book.ProductId)">Thêm Vào Giỏ Hàng</button>
+                    <button class="btn btn-outline">Mua Ngay</button>
+                </div>
             </div>
         </div>
     </div>
@@ -56,7 +63,7 @@
                                     @(((double)productRelation.Price * (1.15)).ToString("N0") + " đ")
                                 </span>
                             </p>
-                            <button class="btn btn-buy w-100">Thêm Vào Giỏ</button>
+                            <button  class="btn btn-buy w-100">Thêm Giỏ Hàng</button>
                         </div>
                     </div>
                 </div>
@@ -68,3 +75,18 @@
         }
     </div>
 </div>
+<script>
+    function changeQuantity(amount) {
+        let quantityInput = document.getElementById("quantityInput");
+        let newValue = parseInt(quantityInput.value) + amount;
+        let maxStock = parseInt(quantityInput.max);
+        if (newValue >= 1 && newValue <= maxStock) {
+            quantityInput.value = newValue;
+        }
+    }
+
+    function addToCart(productId) {
+        let quantity = document.getElementById("quantityInput").value;
+        window.location.href = `/User/Home?handler=AddToCart&productID=${productId}&quantity=${quantity}`;
+    }
+</script>

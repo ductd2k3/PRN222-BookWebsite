@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Services.Interface;
@@ -48,6 +48,7 @@ namespace PRN222_Final_Project.Pages.User
             int pageSize = 6;
             var products = await _product.GetAllAsync();
             await OnGetDefault();
+
             SelectedCategoryId = categoryId;
             SelectedPriceRange = priceRange;
 
@@ -74,6 +75,7 @@ namespace PRN222_Final_Project.Pages.User
                         break;
                 }
             }
+
             int totalProducts = products.Count();
             ProductSearch = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
@@ -84,8 +86,6 @@ namespace PRN222_Final_Project.Pages.User
 
             return Page();
         }
-
-        // Add cart
         public async Task<IActionResult> OnGetAddToCartAsync(int? productID, int quantity)
         {
             string userIDStr = HttpContext.Session.GetString("UserID");
@@ -93,10 +93,16 @@ namespace PRN222_Final_Project.Pages.User
             {
                 return RedirectToPage("/User/Login");
             }
+            var product = await _product.GetByIdAsync(productID.Value);
+            if (product == null || product.Stock < quantity)
+            {
+                return BadRequest("Số lượng sản phẩm không đủ!");
+            }
+
             var cartItems = await _cart.GetAllAsync();
             var existingCart = cartItems.FirstOrDefault(x => x.ProductId == productID && x.UserId == userID);
 
-            if (existingCart == null) 
+            if (existingCart == null)
             {
                 Cart newCart = new Cart
                 {
@@ -110,14 +116,18 @@ namespace PRN222_Final_Project.Pages.User
             }
             else
             {
-                existingCart.Quantity += quantity;
+                int totalQuantity = existingCart.Quantity + quantity;
+                if (totalQuantity > product.Stock)
+                {
+                    return BadRequest("Số lượng sản phẩm trong giỏ vượt quá số lượng còn lại!");
+                }
+
+                existingCart.Quantity = totalQuantity;
                 await _cart.UpdateAsync(existingCart);
             }
 
             return RedirectToPage("/User/Cart");
         }
-
-
 
     }
 }

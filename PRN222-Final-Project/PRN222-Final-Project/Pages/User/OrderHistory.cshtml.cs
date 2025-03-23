@@ -19,48 +19,20 @@ namespace PRN222_Final_Project.Pages.User
 
         public List<OrderHistoryViewModel> ListOrderHistory { get; set; } = new List<OrderHistoryViewModel>();
         public List<OrderStatus> ListOrderStatus { get; set; } = new List<OrderStatus>();
-        public int? StatusFilter { get; set; }  // Lưu trạng thái tìm kiếm
+        public int? StatusFilter { get; set; }
 
-        //public async Task<IActionResult> OnGet()
-        //{
-        //    string userIdString = HttpContext.Session.GetString("UserID");
-        //    if (string.IsNullOrEmpty(userIdString))
-        //    {
-        //        return RedirectToPage("/User/Login");
-        //    }
+        public int PageSize { get; } = 5;
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
 
-        //    int userID = int.Parse(userIdString);
-        //    var listOrder = await _order.GetAllAsync() ?? new List<Order>();
-        //    var listOrderStatus = (await _orderStatus.GetAllAsync())?.ToList() ?? new List<OrderStatus>();
-        //    if (listOrderStatus.Any())
-        //    {
-        //        ListOrderStatus = listOrderStatus;
-        //    }
-        //    if (listOrder.Any() && listOrderStatus.Any())
-        //    {
-        //        ListOrderHistory = (from order in listOrder
-        //                            join orderStatus in listOrderStatus
-        //                            on order.StatusId equals orderStatus.StatusId
-        //                            where order.UserId == userID
-        //                            select new OrderHistoryViewModel
-        //                            {
-        //                                OrderId = order.OrderId,
-        //                                OrderDate = order.OrderDate,
-        //                                OrderStatusID = order.StatusId,
-        //                                Amount = order.TotalAmount,
-        //                                OrderStatusName = orderStatus.StatusName
-        //                            }).ToList();
-        //    }
-
-        //    return Page();
-        //}
-        public async Task<IActionResult> OnGet(int? statusFilter)
+        public async Task<IActionResult> OnGet(int? statusFilter, int pageNumber = 1)
         {
             string userIdString = HttpContext.Session.GetString("UserID");
             if (string.IsNullOrEmpty(userIdString))
             {
                 return RedirectToPage("/User/Login");
             }
+
             StatusFilter = statusFilter;
             int userID = int.Parse(userIdString);
             var listOrder = await _order.GetAllAsync() ?? new List<Order>();
@@ -68,24 +40,29 @@ namespace PRN222_Final_Project.Pages.User
 
             ListOrderStatus = listOrderStatus;
             var filteredOrders = listOrder.Where(o => o.UserId == userID);
+
             if (statusFilter.HasValue && statusFilter.Value != 0)
             {
                 filteredOrders = filteredOrders.Where(o => o.StatusId == statusFilter.Value);
             }
-            ListOrderHistory = (from order in filteredOrders
-                                join orderStatus in listOrderStatus
-                                on order.StatusId equals orderStatus.StatusId
-                                select new OrderHistoryViewModel
-                                {
-                                    OrderId = order.OrderId,
-                                    OrderDate = order.OrderDate,
-                                    OrderStatusID = order.StatusId,
-                                    Amount = order.TotalAmount,
-                                    OrderStatusName = orderStatus.StatusName
-                                }).ToList();
+
+            var orderList = (from order in filteredOrders
+                             join orderStatus in listOrderStatus on order.StatusId equals orderStatus.StatusId
+                             select new OrderHistoryViewModel
+                             {
+                                 OrderId = order.OrderId,
+                                 OrderDate = order.OrderDate,
+                                 OrderStatusID = order.StatusId,
+                                 Amount = order.TotalAmount,
+                                 OrderStatusName = orderStatus.StatusName
+                             }).ToList();
+
+            TotalPages = (int)Math.Ceiling(orderList.Count / (double)PageSize);
+            CurrentPage = pageNumber;
+            ListOrderHistory = orderList.Skip((pageNumber - 1) * PageSize).Take(PageSize).ToList();
 
             return Page();
         }
-
     }
+
 }

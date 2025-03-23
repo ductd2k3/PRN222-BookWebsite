@@ -48,17 +48,26 @@
     <!-- Pagination -->
     <nav aria-label="Cart Pagination">
         <ul class="pagination justify-content-center">
-            @if (Model.ListCart != null && Model.ListCart.Any())
+            @if (Model.TotalPages > 1)
             {
-                @for (int i = 1; i <= Math.Ceiling((double)Model.ListCart.Count / Model.PageSize); i++)
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?pageNumber=@(Model.CurrentPage - 1)">Trước</a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
                 {
                     <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
                         <a class="page-link" href="?pageNumber=@i">@i</a>
                     </li>
                 }
+
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="?pageNumber=@(Model.CurrentPage + 1)">Tiếp</a>
+                </li>
             }
         </ul>
     </nav>
+
 </div>
 
 <!-- Cart Summary -->
@@ -77,13 +86,13 @@
 
             <div class="d-flex justify-content-between mb-2">
                 <span>Phí vận chuyển:</span>
-                <span class="fw-bold">30.000 đ</span>
+                <span class="fw-bold">Free</span>
             </div>
 
             <div class="d-flex justify-content-between mb-3">
                 <span>Tổng cộng:</span>
                 <span class="fw-bold text-success fs-4">
-                    @((Model.ListCart.Sum(x => x.Quantity * x.Price) + 30000).Value.ToString("N0") + " đ")
+                    @((Model.ListCart.Sum(x => x.Quantity * x.Price)).Value.ToString("N0") + " đ")
                 </span>
             </div>
         }
