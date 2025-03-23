@@ -15,40 +15,54 @@
         <button id="saveBtn" class="btn-save" style="display: none;">Lưu</button>
     </div>
 
-    <form method="post">
+    <!-- Hiển thị thông báo -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form method="post" asp-antiforgery="true">
         <div class="profile-info">
             <div class="profile-info-item">
                 <label>Họ và tên:</label>
                 <p id="name">@Model.FullName</p>
-                <input type="text" class="form-input" id="nameInput" name="FullName" value="@Model.FullName" style="display: none;">
+                <input type="text" class="form-input" id="nameInput" asp-for="FullName" style="display: none;" required />
+                <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
 
             <div class="profile-info-item">
                 <label>Email:</label>
                 <p id="email">@Model.Email</p>
-                <input type="email" class="form-input" id="emailInput" name="Email" value="@Model.Email" readonly>
+                <input type="email" class="form-input" id="emailInput" asp-for="Email" readonly />
             </div>
 
             <div class="profile-info-item">
-                <label>Số điện thoại:</label>
-                <p id="phone">@Model.Phone</p>
-                <input type="text" class="form-input" id="phoneInput" name="Phone" value="@Model.Phone" style="display: none;">
-            </div>
-
-            <div class="profile-info-item">
-                <label>Địa chỉ:</label>
-                <p id="address">@Model.Address</p>
-                <input type="text" class="form-input" id="addressInput" name="Address" value="@Model.Address" style="display: none;">
+                <label>Số điện thoại - Địa chỉ:</label>
+                <p id="address">@(Model.Address ?? "Chưa cập nhật")</p>
+                <input type="text" class="form-input" id="addressInput" asp-for="Address" style="display: none;" placeholder="Nhập mật địa chỉ - số điện thoại" />
+                <span asp-validation-for="Address" class="text-danger"></span>
             </div>
 
             <div class="profile-info-item">
                 <label>Mật khẩu mới:</label>
-                <input type="password" class="form-input" id="newPasswordInput" name="NewPassword" placeholder="Nhập mật khẩu mới" style="display: none;">
+                <input type="password" class="form-input" id="newPasswordInput" asp-for="NewPassword" placeholder="Nhập mật khẩu mới (nếu muốn đổi)" style="display: none;" />
+                <span asp-validation-for="NewPassword" class="text-danger"></span>
             </div>
 
             <div class="profile-info-item">
                 <label>Xác nhận mật khẩu:</label>
-                <input type="password" class="form-input" id="confirmPasswordInput" name="ConfirmPassword" placeholder="Nhập lại mật khẩu" style="display: none;">
+                <input type="password" class="form-input" id="confirmPasswordInput" asp-for="ConfirmPassword" placeholder="Nhập lại mật khẩu (nếu muốn đổi)" style="display: none;" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
         </div>
 
@@ -59,7 +73,7 @@
 <script>
     document.getElementById('editBtn').addEventListener('click', function () {
         document.querySelectorAll('.profile-info-item p').forEach(p => p.style.display = 'none');
-        document.querySelectorAll('.form-input').forEach(input => input.style.display = 'block');
+        document.querySelectorAll('.form-input:not([readonly])').forEach(input => input.style.display = 'block');
         document.getElementById('editBtn').style.display = 'none';
         document.getElementById('saveBtn').style.display = 'inline-block';
         document.getElementById('submitBtn').style.display = 'inline-block';
@@ -69,3 +83,10 @@
         document.querySelector('form').submit();
     });
 </script>
+
+<style>
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+    }
+</style>

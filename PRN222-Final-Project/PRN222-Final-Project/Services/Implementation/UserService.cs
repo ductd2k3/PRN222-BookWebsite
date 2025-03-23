@@ -1,4 +1,5 @@
-﻿using PRN222_Final_Project.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Repositories.Interface;
 using PRN222_Final_Project.Services.Interface;
 
@@ -22,6 +23,11 @@ namespace PRN222_Final_Project.Services.Implementation
            int pageSize = 10)
         {
             return await _userRepository.GetUserPagesAsync(search, pageNumber, pageSize);
+        }
+
+        public async Task<bool> IsDuplicateEmail(string email, string username)
+        {
+            return await _userRepository.IsDuplicateEmail(email, username);
         }
     }
 }

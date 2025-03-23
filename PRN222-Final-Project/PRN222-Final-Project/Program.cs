@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PRN222_Final_Project.Hubs;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Repositories.Implementation;
 using PRN222_Final_Project.Repositories.Interface;
@@ -15,6 +16,9 @@ namespace PRN222_Final_Project
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddSignalR();
+            builder.Services.AddHttpClient();
+            builder.Services.AddHttpContextAccessor();
 
             // Add database
             builder.Services.AddDbContext<BookStoreDbOptimizedContext>(options =>
@@ -35,6 +39,8 @@ namespace PRN222_Final_Project
 
             builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
+
+            builder.Services.AddScoped<IEmailService, EmailService>();
             // **Session Configuration**
             builder.Services.AddSession(options =>
             {
@@ -64,9 +70,7 @@ namespace PRN222_Final_Project
 
             // Map Razor Pages
             app.MapRazorPages();
-
-            // **Remove this line** (app.MapFallbackToPage("/User/Home");) nếu không cần thiết.
-            // Vì Razor Pages đã tự xử lý routing.
+            app.MapHub<OrderHub>("/orderhub");
 
             app.Run();
         }

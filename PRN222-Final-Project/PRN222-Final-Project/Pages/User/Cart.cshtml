@@ -1,11 +1,50 @@
 ﻿@page
 @model PRN222_Final_Project.Pages.User.CartModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using System.Text.Json
 @{
     ViewData["Title"] = "Giỏ Hàng Của Bạn";
+    string userIdStr = HttpContextAccessor.HttpContext?.Session.GetString("UserID");
+    if (!string.IsNullOrEmpty(userIdStr) && int.TryParse(userIdStr, out int userId))
+    {
+        userIdStr = userId.ToString("D4");
+    }
+    else
+    {
+        userIdStr = "0000";
+    }
 }
 
 <head>
     <link rel="stylesheet" href="~/css/Cart.css" asp-append-version="true" />
+    <style>
+        .timer-container {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff5722;
+        }
+
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .failure {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .modal-body img {
+            margin: 20px auto;
+            display: block;
+            max-width: 200px;
+        }
+    </style>
 </head>
 
 <div class="container cart-container">
@@ -67,11 +106,10 @@
             }
         </ul>
     </nav>
-
 </div>
 
-<!-- Cart Summary -->
-<form method="post" asp-page-handler="Payment">
+<!-- Cart Summary and Payment Form -->
+<form method="post" asp-page-handler="Payment" id="paymentForm">
     <div class="container cart-summary">
         <h3 class="mb-3">Tổng Quan Đơn Hàng</h3>
 
@@ -91,7 +129,7 @@
 
             <div class="d-flex justify-content-between mb-3">
                 <span>Tổng cộng:</span>
-                <span class="fw-bold text-success fs-4">
+                <span class="fw-bold text-success fs-4" id="totalAmount">
                     @((Model.ListCart.Sum(x => x.Quantity * x.Price)).Value.ToString("N0") + " đ")
                 </span>
             </div>
@@ -121,20 +159,176 @@
             <small id="addressError" class="text-danger" style="display: none;">Vui lòng nhập cả địa chỉ và số điện thoại!</small>
         </div>
 
-        <button type="submit" class="btn-checkout">Thanh Toán</button>
+        <button type="button" class="btn-checkout" id="showPaymentModal">Thanh Toán</button>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalLabel">Thanh Toán Đơn Hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="" alt="QR Code Thanh Toán" id="qr-code">
+                    <p><strong>Số tiền:</strong> <span id="modal-price"></span></p>
+                    <p><strong>Địa chỉ giao hàng:</strong> <span id="modal-address"></span></p>
+                    <p><strong>Nội dung chuyển khoản:</strong> <span id="payment-code"></span></p>
+                    <p><strong>Ngân hàng:</strong> TPBank</p>
+                    <p><strong>Số tài khoản:</strong> 00003480126</p>
+                    <p><strong>Chủ tài khoản:</strong> Trần Đình Đức</p>
+                    <div class="timer-container">
+                        <p>Thời gian còn lại: <span id="timer" class="timer">03:00</span></p>
+                        <p id="payment-status"></p>
+                    </div>
+                    <p>Vui lòng quét mã QR hoặc chuyển khoản theo thông tin trên để hoàn tất thanh toán.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
     </div>
 </form>
 
+<!-- Bootstrap JS and Custom Script -->
 <script>
-    function validateForm() {
-        var addressInput = document.getElementById("address").value.trim();
-        var errorText = document.getElementById("addressError");
-        if (addressInput === "" || !addressInput.includes(" ")) {
-            errorText.style.display = "block";
-            return false;
-        } else {
-            errorText.style.display = "none";
-            return true;
+    document.addEventListener('DOMContentLoaded', function () {
+        const paymentModal = document.getElementById('paymentModal');
+        const qrBaseUrl = 'https://qr.sepay.vn/img?acc=00003480126&bank=TPBank&amount=';
+        const userIdStr = '@userIdStr';
+        let currentPaymentCode = '';
+        let timerInterval = null;
+        let checkInterval = null;
+        const totalTime = 3 * 60 * 1000; // 3 phút
+        let remainingTime = totalTime;
+
+        // Xử lý nút Thanh Toán
+        document.getElementById('showPaymentModal').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const addressInput = document.getElementById('address');
+            const addressError = document.getElementById('addressError');
+
+            if (!addressInput.value.trim()) {
+                addressError.style.display = 'block';
+                return;
+            }
+            addressError.style.display = 'none';
+
+            const modal = new bootstrap.Modal(paymentModal);
+            modal.show();
+        });
+
+        // Khi modal hiển thị
+        paymentModal.addEventListener('show.bs.modal', function (event) {
+            const address = document.getElementById('address').value;
+            const price = document.getElementById('totalAmount').textContent.trim();
+
+            const now = new Date();
+            const timestamp = now.getUTCFullYear().toString().slice(-2) +
+                String(now.getUTCMonth() + 1).padStart(2, '0') +
+                String(now.getUTCDate()).padStart(2, '0') +
+                String(now.getUTCHours()).padStart(2, '0') +
+                String(now.getUTCMinutes()).padStart(2, '0');
+            currentPaymentCode = `${userIdStr}${timestamp}`;
+
+            const modalPrice = document.getElementById('modal-price');
+            const modalAddress = document.getElementById('modal-address');
+            const paymentCodeSpan = document.getElementById('payment-code');
+            const qrImage = document.getElementById('qr-code');
+            const timerDisplay = document.getElementById('timer');
+            const paymentStatus = document.getElementById('payment-status');
+
+            modalPrice.textContent = price;
+            modalAddress.textContent = address;
+            paymentCodeSpan.textContent = currentPaymentCode;
+            paymentStatus.textContent = '';
+
+            const cleanPrice = price.replace(/[^0-9]/g, ''); // Loại bỏ ký tự không phải số
+            qrImage.src = `${qrBaseUrl}${cleanPrice}&des=${currentPaymentCode}`;
+
+            remainingTime = totalTime;
+            updateTimerDisplay(timerDisplay);
+            startTimer(timerDisplay, paymentStatus);
+            startPaymentCheck(address, currentPaymentCode, paymentStatus);
+        });
+
+        // Khi modal bị đóng
+        paymentModal.addEventListener('hidden.bs.modal', function () {
+            clearInterval(timerInterval);
+            clearInterval(checkInterval);
+        });
+
+        // Cập nhật đồng hồ đếm ngược
+        function updateTimerDisplay(timerElement) {
+            const minutes = Math.floor(remainingTime / 60000);
+            const seconds = Math.floor((remainingTime % 60000) / 1000);
+            timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
-    }
+
+        // Khởi động đồng hồ đếm ngược
+        function startTimer(timerElement, statusElement) {
+            timerInterval = setInterval(() => {
+                remainingTime -= 1000;
+                updateTimerDisplay(timerElement);
+
+                if (remainingTime <= 0) {
+                    clearInterval(timerInterval);
+                    clearInterval(checkInterval);
+                    statusElement.textContent = 'Thanh toán thất bại: Hết thời gian!';
+                    statusElement.className = 'failure';
+                    setTimeout(() => paymentModal.querySelector('.btn-close').click(), 2000);
+                }
+            }, 1000);
+        }
+
+        // Kiểm tra trạng thái thanh toán
+        async function startPaymentCheck(address, paymentCode, statusElement) {
+            checkInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/User/Cart?handler=CheckPayment&paymentCode=${encodeURIComponent(paymentCode)}&address=${encodeURIComponent(address)}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        clearInterval(timerInterval);
+                        clearInterval(checkInterval);
+                        statusElement.textContent = result.message || 'Thanh toán thành công!';
+                        statusElement.className = 'success';
+
+                        // Gửi email xác nhận (nếu cần)
+                        try {
+                            const emailResponse = await fetch(`/User/Cart?handler=SendConfirmationEmail&address=${encodeURIComponent(address)}`, {
+                                method: 'GET'
+                            });
+                            const emailResult = await emailResponse.json();
+                            if (emailResult.success) {
+                                console.log('Email sent successfully:', emailResult.message);
+                            } else {
+                                console.error('Failed to send email:', emailResult.message);
+                            }
+                        } catch (emailError) {
+                            console.error('Error sending email:', emailError);
+                        }
+
+                        setTimeout(() => paymentModal.querySelector('.btn-close').click(), 3000);
+                        setTimeout(() => window.location.reload(), 3500); // Tải lại trang sau khi thành công
+                    } else if (remainingTime > 0) {
+                        console.log('Payment not yet confirmed:', result.message);
+                    }
+                } catch (error) {
+                    clearInterval(timerInterval);
+                    clearInterval(checkInterval);
+                    statusElement.textContent = 'Lỗi hệ thống, vui lòng thử lại!';
+                    statusElement.className = 'failure';
+                    setTimeout(() => paymentModal.querySelector('.btn-close').click(), 2000);
+                }
+            }, 3000); // Kiểm tra mỗi 3 giây
+        }
+    });
 </script>

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Services.Interface;
-using System.Threading.Tasks;
+using BCrypt.Net;
 
 namespace PRN222_Final_Project.Pages.User
 {
@@ -24,9 +24,6 @@ namespace PRN222_Final_Project.Pages.User
         public string Email { get; set; } = string.Empty;
 
         [BindProperty]
-        public string Phone { get; set; } = string.Empty;
-
-        [BindProperty]
         public string Address { get; set; } = string.Empty;
 
         [BindProperty]
@@ -35,7 +32,9 @@ namespace PRN222_Final_Project.Pages.User
         [BindProperty]
         public string ConfirmPassword { get; set; } = string.Empty;
 
-        public async Task<IActionResult> OnGet()
+        public string ErrorMessage { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
             string userIdString = HttpContext.Session.GetString("UserID");
             if (string.IsNullOrEmpty(userIdString))
@@ -43,15 +42,14 @@ namespace PRN222_Final_Project.Pages.User
                 return RedirectToPage("/User/Login");
             }
 
-            int userID = int.Parse(userIdString);
-            UserProfile = await _userService.GetByIdAsync(userID);
+            int userId = int.Parse(userIdString);
+            UserProfile = await _userService.GetByIdAsync(userId);
 
             if (UserProfile == null)
             {
                 return NotFound();
             }
 
-            // Đổ dữ liệu vào form
             FullName = UserProfile.FullName;
             Email = UserProfile.Email;
             Address = UserProfile.Address;
@@ -59,7 +57,7 @@ namespace PRN222_Final_Project.Pages.User
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             string userIdString = HttpContext.Session.GetString("UserID");
             if (string.IsNullOrEmpty(userIdString))
@@ -67,32 +65,55 @@ namespace PRN222_Final_Project.Pages.User
                 return RedirectToPage("/User/Login");
             }
 
-            int userID = int.Parse(userIdString);
-            var userToUpdate = await _userService.GetByIdAsync(userID);
+            int userId = int.Parse(userIdString);
+            var userToUpdate = await _userService.GetByIdAsync(userId);
 
             if (userToUpdate == null)
             {
-                ModelState.AddModelError(string.Empty, "Không tìm thấy người dùng!");
+                ErrorMessage = "Không tìm thấy người dùng!";
                 return Page();
             }
 
-            if (!string.IsNullOrEmpty(NewPassword) && NewPassword != ConfirmPassword)
+            // Validate chỉ các trường bắt buộc
+            if (string.IsNullOrEmpty(FullName))
             {
-                ModelState.AddModelError("ConfirmPassword", "Mật khẩu xác nhận không khớp!");
+                ModelState.AddModelError("FullName", "Họ và tên là bắt buộc!");
+                FullName = userToUpdate.FullName;
+                Email = userToUpdate.Email;
+                Address = userToUpdate.Address;
                 return Page();
+            }
+
+            // Validate mật khẩu nếu có nhập
+            if (!string.IsNullOrEmpty(NewPassword) || !string.IsNullOrEmpty(ConfirmPassword))
+            {
+                if (NewPassword != ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "Mật khẩu xác nhận không khớp!");
+                    FullName = userToUpdate.FullName;
+                    Email = userToUpdate.Email;
+                    Address = userToUpdate.Address;
+                    return Page();
+                }
+                if (string.IsNullOrEmpty(NewPassword))
+                {
+                    ModelState.AddModelError("NewPassword", "Vui lòng nhập mật khẩu mới!");
+                    FullName = userToUpdate.FullName;
+                    Email = userToUpdate.Email;
+                    Address = userToUpdate.Address;
+                    return Page();
+                }
+                userToUpdate.Password = BCrypt.Net.BCrypt.HashPassword(NewPassword);
             }
 
             // Cập nhật thông tin
             userToUpdate.FullName = FullName;
-            userToUpdate.Email = Email;
             userToUpdate.Address = Address;
 
-            if (!string.IsNullOrEmpty(NewPassword))
-            {
-                userToUpdate.Password = NewPassword;
-            }
-
             await _userService.UpdateAsync(userToUpdate);
+
+            // Cập nhật session
+            HttpContext.Session.SetString("UserName", FullName);
 
             TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
             return RedirectToPage();

@@ -1,4 +1,5 @@
-﻿using PRN222_Final_Project.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PRN222_Final_Project.Models;
 
 namespace PRN222_Final_Project.Services.Interface
 {
@@ -9,5 +10,6 @@ namespace PRN222_Final_Project.Services.Interface
            string search = null,
            int pageNumber = 1,
            int pageSize = 10);
+        Task<bool> IsDuplicateEmail(string email, string username);
     }
 }

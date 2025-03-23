@@ -14,7 +14,15 @@ namespace PRN222_Final_Project.Repositories.Implementation
 
         public async Task<User> login(string email, string password)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+            var user = await _context.Users
+                .Include(u => u.Role) // Include Role để lấy RoleName
+                .FirstOrDefaultAsync(u => u.Email == email || u.Username == email);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
+            {
+                return null;
+            }
+
+            return user;
         }
 
         public async Task<(IEnumerable<User> Items, int TotalCount)> GetUserPagesAsync(
@@ -40,6 +48,11 @@ namespace PRN222_Final_Project.Repositories.Implementation
                 .ToListAsync();
 
             return (items, totalCount);
+        }
+
+        public async Task<bool> IsDuplicateEmail(string email, string Username)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email || u.Username == Username);
         }
     }
 }

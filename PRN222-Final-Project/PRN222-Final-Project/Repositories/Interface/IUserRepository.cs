@@ -9,5 +9,6 @@ namespace PRN222_Final_Project.Repositories.Interface
            string search = null,
            int pageNumber = 1,
            int pageSize = 10);
+        Task<bool> IsDuplicateEmail(string email, string username);
     }
 }
