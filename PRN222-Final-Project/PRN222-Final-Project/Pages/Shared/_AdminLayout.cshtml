@@ -16,20 +16,30 @@
     </style>
 </head>
 <body>
+    @{
+        var role = Context.Session.GetString("Role");
+    }
     <!-- Sidebar -->
     <div class="sidebar">
-        <a class="navbar-brand" href="/Manager/Admin-Dashboard">Admin - Hiệu Sách</a>
-        <a href="/Manager/Admin-Dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
-        <a href="/Manager/Staff-ManageBook"><i class="fas fa-book me-2"></i> Quản Lý Sách</a>
-        <a href="/Manager/Staff-ManageCategory"><i class="fas fa-book me-2"></i> Quản Lý Danh Mục</a>
-        <a href="/Manager/Staff-ManageOrder"><i class="fas fa-shopping-cart me-2"></i> Quản Lý Đơn Hàng</a>
-        <a href="/Manager/Admin-ManageUser"><i class="fas fa-users me-2"></i> Quản Lý Nhân Viên</a>
+        @if(!string.IsNullOrEmpty(role) && string.Equals(role, "admin", StringComparison.OrdinalIgnoreCase))
+        {
+            <a class="navbar-brand" href="/Manager/Admin-Dashboard">Admin - Hiệu Sách</a>
+            <a href="/Manager/Admin-Dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+            <a href="/Manager/Admin-ManageUser"><i class="fas fa-users me-2"></i> Quản Lý Nhân Viên</a>
+        }
+        @if (!string.IsNullOrEmpty(role) && string.Equals(role, "staff", StringComparison.OrdinalIgnoreCase))
+        {
+            <a class="navbar-brand" href="/Manager/Staff-ManageBook">Staff - Hiệu Sách</a>
+            <a href="/Manager/Staff-ManageBook"><i class="fas fa-book me-2"></i> Quản Lý Sách</a>
+            <a href="/Manager/Staff-ManageCategory"><i class="fas fa-book me-2"></i> Quản Lý Danh Mục</a>
+            <a href="/Manager/Staff-ManageOrder"><i class="fas fa-shopping-cart me-2"></i> Quản Lý Đơn Hàng</a>
+        }
         <a href="/Logout"><i class="fas fa-sign-out-alt me-2"></i> Đăng Xuất</a>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        @RenderBody() <!-- Nội dung của từng trang admin sẽ được chèn vào đây -->
+        @RenderBody()
     </div>
 
     <!-- Bootstrap JS -->

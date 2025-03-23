@@ -5,6 +5,24 @@
 @{
     Layout = "_AdminLayout";
 }
+<style>
+    /* Alert Message */
+    .alert-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+</style>
+<div class="alert-container" id="notificationArea">
+    @if (!string.IsNullOrEmpty(Model.AlertMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @Model.AlertMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+</div>
 <head>
     <link rel="stylesheet" href="~/css/staff_manageorder.css" asp-append-version="true" />
 </head>
@@ -73,3 +91,31 @@
         </nav>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+<script>
+    // Kết nối tới SignalR Hub
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/orderhub")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+    // Xử lý khi nhận thông báo từ server
+    connection.on("ReceiveOrderNotification", (orderId, customerName, total) => {
+        const notificationArea = document.getElementById("notificationArea");
+        const alertDiv = document.createElement("div");
+        alertDiv.className = "alert alert-danger alert-dismissible fade show";
+        alertDiv.role = "alert";
+        alertDiv.innerHTML = `
+                    Đơn hàng mới! ID: ${orderId}, Customer: ${customerName}, Total: $${total}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+        notificationArea.insertBefore(alertDiv, notificationArea.firstChild);
+    });
+
+    // Bắt đầu kết nối
+    connection.start().then(() => {
+        console.log("Connected to SignalR Hub");
+    }).catch(err => {
+        console.error("Error connecting to SignalR: ", err);
+    });
+</script>

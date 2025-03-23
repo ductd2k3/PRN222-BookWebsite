@@ -23,6 +23,8 @@ namespace PRN222_Final_Project.Pages.User
         [BindProperty] public string Email { get; set; }
         [BindProperty] public string Password { get; set; }
         public string ErrorMessage { get; set; }
+        [BindProperty(SupportsGet = true)] // Cho phép nhận từ query string
+        public string Message { get; set; }
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userService.Login(Email, Password);
@@ -40,6 +42,8 @@ namespace PRN222_Final_Project.Pages.User
             // Set sesion
             HttpContext.Session.SetString("UserID", user.UserId.ToString());
             HttpContext.Session.SetString("UserName", user.FullName);
+            HttpContext.Session.SetString("Role", user.Role.RoleName);
+            HttpContext.Session.SetString("UserEmail", user.Email);
 
             var role = await _genericService.GetByIdAsync(user.RoleId.Value);
 

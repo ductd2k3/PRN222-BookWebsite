@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
+using PRN222_Final_Project.Hubs;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Services.Implementation;
 using PRN222_Final_Project.Services.Interface;
@@ -11,20 +13,26 @@ namespace PRN222_Final_Project.Pages.Manager
     {
         private readonly IOrderService _orderService;
         private readonly IGenericService<OrderStatus> _genericService;
-        public Staff_ManageOrderModel(IOrderService orderService, IGenericService<OrderStatus> genericService)
+        private readonly IHubContext<OrderHub> _hubContext;
+        public Staff_ManageOrderModel(IOrderService orderService
+            , IGenericService<OrderStatus> genericService
+            , IHubContext<OrderHub> hubContext
+            )
         {
             _orderService = orderService;
             _genericService = genericService;
+            _hubContext = hubContext;
         }
         public IEnumerable<Order> Orders { get; set; } = Enumerable.Empty<Order>();
         public IEnumerable<OrderStatus> Statuss { get; set; } = Enumerable.Empty<OrderStatus>();
-        public int TotalCount { get; private set; }
+        public int TotalCount { get; set; }
         public int PageSize { get; } = 5;
-        public int CurrentPage { get; private set; } = 1;
+        public int CurrentPage { get; set; } = 1;
         [BindProperty(SupportsGet = true)]
         public int? OrderId { get; set; }
         [BindProperty(SupportsGet = true)]
         public int? StatusId { get; set; }
+        public string AlertMessage { get; set; }
         public async Task<IActionResult> OnGetAsync(int pageNumber = 1)
         {
             try

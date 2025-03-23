@@ -2,6 +2,7 @@
 @model PRN222_Final_Project.Pages.User.RegisterModel
 @{
 }
+
 <style>
     /* Register Form */
     .register-container {
@@ -55,21 +56,50 @@
         .form-link:hover {
             color: #F97316;
         }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+    }
+    /* Alert Message */
+    .alert-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
 </style>
+<div class="alert-container">
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+</div>
 <div class="register-container">
     <h2 class="text-center mb-4">Đăng Ký</h2>
-    <form>
+    <form method="post" asp-antiforgery="true">
         <div class="mb-3">
-            <input type="text" class="form-input" placeholder="Họ và tên" required>
+            <input asp-for="Input.Username" class="form-input" placeholder="Tên đăng nhập" required />
+            <span asp-validation-for="Input.Username" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <input type="email" class="form-input" placeholder="Email" required>
+            <input asp-for="Input.Email" class="form-input" placeholder="Email" required />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <input type="password" class="form-input" placeholder="Mật khẩu" required>
+            <input asp-for="Input.FullName" class="form-input" placeholder="Họ và tên" required />
+            <span asp-validation-for="Input.FullName" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <input type="password" class="form-input" placeholder="Xác nhận mật khẩu" required>
+            <input asp-for="Input.Password" type="password" class="form-input" placeholder="Mật khẩu" required />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <input asp-for="Input.ConfirmPassword" type="password" class="form-input" placeholder="Xác nhận mật khẩu" required />
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
         </div>
         <button type="submit" class="btn-register">Đăng Ký</button>
     </form>
