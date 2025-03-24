@@ -1,0 +1,73 @@
+﻿@page
+@model PRN222_Final_Project.Pages.Error.AccessDeniedModel;
+@{
+    ViewData["Title"] = "Truy Cập Bị Từ Chối";
+    Layout = null; // Không sử dụng layout chung
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .access-denied-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .denied-title {
+            font-size: 6rem; /* Tiêu đề rất lớn */
+            color: #dc3545; /* Màu đỏ */
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .denied-message {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .denied-icon {
+            margin: 30px 0;
+        }
+
+        .denied-icon svg {
+            width: 300px;
+            height: 300px;
+        }
+
+        .denied-info {
+            font-size: 1.5rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="access-denied-container">
+        <h1 class="denied-title">Truy Cập Bị Từ Chối</h1>
+        <p class="denied-message">Bạn không có quyền truy cập vào khu vực này.</p>
+        <div class="denied-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12" y2="16" />
+            </svg>
+        </div>
+        <p class="denied-info">Vui lòng liên hệ quản trị viên nếu bạn nghĩ đây là lỗi.</p>
+    </div>
+</body>
+</html>

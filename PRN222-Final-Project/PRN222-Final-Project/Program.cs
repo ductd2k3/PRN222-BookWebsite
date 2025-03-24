@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PRN222_Final_Project.Filters;
 using PRN222_Final_Project.Hubs;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Repositories.Implementation;
@@ -19,6 +20,11 @@ namespace PRN222_Final_Project
             builder.Services.AddSignalR();
             builder.Services.AddHttpClient();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddRazorPages()
+                    .AddMvcOptions(options =>
+                    {
+                        options.Filters.Add<AuthorizationPageFilter>();
+                    });
 
             // Add database
             builder.Services.AddDbContext<BookStoreDbOptimizedContext>(options =>
