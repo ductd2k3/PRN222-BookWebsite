@@ -20,7 +20,6 @@ namespace PRN222_Final_Project.Pages.User
         private readonly IGenericService<OrderDetail> _orderDetail;
         private readonly IHubContext<OrderHub> _hubContext;
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
 
@@ -30,7 +29,6 @@ namespace PRN222_Final_Project.Pages.User
                          IGenericService<OrderDetail> orderDetail,
                          IHubContext<OrderHub> hubContext,
                          IHttpClientFactory httpClientFactory,
-                         IHttpContextAccessor httpContextAccessor,
                          IConfiguration configuration,
                          IEmailService emailService)
         {
@@ -40,7 +38,6 @@ namespace PRN222_Final_Project.Pages.User
             _orderDetail = orderDetail;
             _hubContext = hubContext;
             _httpClientFactory = httpClientFactory;
-            _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
             _emailService = emailService;
         }
@@ -209,12 +206,6 @@ namespace PRN222_Final_Project.Pages.User
                 }
             }
 
-            // Xóa giỏ hàng
-            foreach (var item in cartItems.Where(c => c.UserId == userID))
-            {
-                await _cart.DeleteAsync(item.CartId);
-            }
-
             // Thông báo qua SignalR
             await _hubContext.Clients.All.SendAsync("ReceiveOrderNotification", orderId, userName, totalAmount);
 
@@ -254,7 +245,8 @@ namespace PRN222_Final_Project.Pages.User
                     tx.TransactionContent?.Trim().ToLower() == paymentCode?.Trim().ToLower());
 
                 if (matchedTransaction != null)
-                {                  
+                {
+                    await OnPostPayment(address); // Xử lý đơn hàng khi thanh toán khớp
                     return new JsonResult(new { success = true, message = "Thanh toán thành công!" });
                 }
 
@@ -277,7 +269,7 @@ namespace PRN222_Final_Project.Pages.User
                 }
 
                 int userId = int.Parse(userIdString);
-                var userEmail = _httpContextAccessor.HttpContext?.Session.GetString("UserEmail");
+                var userEmail = HttpContext.Session.GetString("UserEmail");
                 var userName = HttpContext.Session.GetString("UserName") ?? "Khách hàng";
 
                 var cartItems = await _cart.GetAllAsync();
@@ -366,7 +358,11 @@ namespace PRN222_Final_Project.Pages.User
 </html>",
                     IsHtml = true
                 };
-                await OnPostPayment(address); // Xử lý đơn hàng khi thanh toán khớp
+                // Xóa giỏ hàng
+                foreach (var item in cartItems.Where(c => c.UserId == userId))
+                {
+                    await _cart.DeleteAsync(item.CartId);
+                }
                 await _emailService.SendEmailAsync(emailMessage);
                 return new JsonResult(new { success = true, message = "Email xác nhận đã được gửi" });
             }
