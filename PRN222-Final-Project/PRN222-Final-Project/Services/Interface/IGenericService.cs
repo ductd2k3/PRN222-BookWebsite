@@ -1,4 +1,6 @@
-﻿namespace PRN222_Final_Project.Services.Interface
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace PRN222_Final_Project.Services.Interface
 {
     public interface IGenericService<T> where T : class
     {
