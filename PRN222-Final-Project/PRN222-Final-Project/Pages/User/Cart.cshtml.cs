@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PRN222_Final_Project.Pages.User
 {
@@ -68,7 +69,8 @@ namespace PRN222_Final_Project.Pages.User
                                     Quantity = cart.Quantity,
                                     AddedDate = cart.AddedDate,
                                     ProductName = product.Title,
-                                    Price = product.Price
+                                    Price = product.Price,
+                                    Image = product.ImageUrl
                                 }).ToList();
             TotalPages = (int)Math.Ceiling((double)filteredCart.Count / PageSize);
             ListCart = filteredCart.Skip((pageNumber - 1) * PageSize).Take(PageSize).ToList();
