@@ -73,12 +73,15 @@
         <form method="POST">
             <input type="hidden" name="orderId" value="@(Model.Order.OrderId)">
             <div class="order-actions d-flex justify-content-end gap-2">
-                <button type="submit" class="btn btn-success" name="status" value="confirm">
-                    <i class="fas fa-check me-2"></i> Xác Nhận Đơn
-                </button>
-                <button type="submit" class="btn btn-danger" name="status" value="reject">
-                    <i class="fas fa-times me-2"></i> Hủy Đơn
-                </button>
+                @if(Model.Order.Status.StatusName == "Đặt hàng")
+                {
+                    <button type="submit" class="btn btn-success" name="status" value="confirm">
+                        <i class="fas fa-check me-2"></i> Xác Nhận Đơn
+                    </button>
+                    <button type="submit" class="btn btn-danger" name="status" value="reject">
+                        <i class="fas fa-times me-2"></i> Hủy Đơn
+                    </button>
+                }
             </div>
         </form>
     </div>

@@ -56,7 +56,7 @@
             @foreach (var item in Model.ListCart)
             {
                 <div class="cart-item">
-                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794" alt="@item.ProductName">
+                    <img src="@item.Image" alt="@item.ProductName">
                     <div class="cart-item-info">
                         <h5 class="cart-item-title">@item.ProductName</h5>
                         <p class="cart-item-price">@item.Price.ToString("N0") đ</p>
@@ -641,50 +641,90 @@
         }
 
         // Kiểm tra trạng thái thanh toán
+        // async function startPaymentCheck(address, paymentCode, statusElement) {
+        //     checkInterval = setInterval(async () => {
+        //         try {
+        //             const selectedItems = Array.from(document.querySelectorAll('.select-item:checked')).map(item => item.value);
+        //             const response = await fetch(`/User/Cart?handler=CheckPayment&paymentCode=${encodeURIComponent(paymentCode)}&address=${encodeURIComponent(address)}&selectedItems=${selectedItems.join(',')}`, {
+        //                 method: 'GET',
+        //                 headers: { 'Content-Type': 'application/json' }
+        //             });
+
+        //             const result = await response.json();
+
+        //             if (result.success) {
+        //                 clearInterval(timerInterval);
+        //                 clearInterval(checkInterval);
+        //                 statusElement.textContent = result.message || 'Thanh toán thành công!';
+        //                 statusElement.className = 'success';
+
+        //                 // try {
+        //                 //     const emailResponse = await fetch(`/User/Cart?handler=SendConfirmationEmail&address=${encodeURIComponent(address)}&selectedItems=${selectedItems.join(',')}`, {
+        //                 //         method: 'GET'
+        //                 //     });
+        //                 //     const emailResult = await emailResponse.json();
+        //                 //     if (emailResult.success) {
+        //                 //         console.log('Email sent successfully:', emailResult.message);
+        //                 //     } else {
+        //                 //         console.error('Failed to send email:', emailResult.message);
+        //                 //     }
+        //                 // } catch (emailError) {
+        //                 //     console.error('Error sending email:', emailError);
+        //                 // }
+
+        //                 setTimeout(() => paymentModal.querySelector('.btn-close').click(), 3000);
+        //                 setTimeout(() => window.location.reload(), 3500);
+        //             } else if (remainingTime > 0) {
+        //                 console.log('Payment not yet confirmed:', result.message);
+        //             }
+        //         } catch (error) {
+        //             clearInterval(timerInterval);
+        //             clearInterval(checkInterval);
+        //             statusElement.textContent = 'Lỗi hệ thống, vui lòng thử lại!';
+        //             statusElement.className = 'failure';
+        //             setTimeout(() => paymentModal.querySelector('.btn-close').click(), 2000);
+        //         }
+        //     }, 3000);
+        // }
+
         async function startPaymentCheck(address, paymentCode, statusElement) {
-            checkInterval = setInterval(async () => {
-                try {
-                    const selectedItems = Array.from(document.querySelectorAll('.select-item:checked')).map(item => item.value);
-                    const response = await fetch(`/User/Cart?handler=CheckPayment&paymentCode=${encodeURIComponent(paymentCode)}&address=${encodeURIComponent(address)}&selectedItems=${selectedItems.join(',')}`, {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' }
-                    });
+            try {
+                const selectedItems = Array.from(document.querySelectorAll('.select-item:checked')).map(item => item.value);
+                const response = await fetch(`/User/Cart?handler=CheckPayment&paymentCode=${encodeURIComponent(paymentCode)}&address=${encodeURIComponent(address)}&selectedItems=${selectedItems.join(',')}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
 
-                    const result = await response.json();
+                const result = await response.json();
 
-                    if (result.success) {
-                        clearInterval(timerInterval);
-                        clearInterval(checkInterval);
-                        statusElement.textContent = result.message || 'Thanh toán thành công!';
-                        statusElement.className = 'success';
+                if (result.success) {
+                    statusElement.textContent = result.message || 'Thanh toán thành công!';
+                    statusElement.className = 'success';
 
-                        try {
-                            const emailResponse = await fetch(`/User/Cart?handler=SendConfirmationEmail&address=${encodeURIComponent(address)}&selectedItems=${selectedItems.join(',')}`, {
-                                method: 'GET'
-                            });
-                            const emailResult = await emailResponse.json();
-                            if (emailResult.success) {
-                                console.log('Email sent successfully:', emailResult.message);
-                            } else {
-                                console.error('Failed to send email:', emailResult.message);
-                            }
-                        } catch (emailError) {
-                            console.error('Error sending email:', emailError);
-                        }
+                    // try {
+                    //     const emailResponse = await fetch(`/User/Cart?handler=SendConfirmationEmail&address=${encodeURIComponent(address)}&selectedItems=${selectedItems.join(',')}`, {
+                    //         method: 'GET'
+                    //     });
+                    //     const emailResult = await emailResponse.json();
+                    //     if (emailResult.success) {
+                    //         console.log('Email sent successfully:', emailResult.message);
+                    //     } else {
+                    //         console.error('Failed to send email:', emailResult.message);
+                    //     }
+                    // } catch (emailError) {
+                    //     console.error('Error sending email:', emailError);
+                    // }
 
-                        setTimeout(() => paymentModal.querySelector('.btn-close').click(), 3000);
-                        setTimeout(() => window.location.reload(), 3500);
-                    } else if (remainingTime > 0) {
-                        console.log('Payment not yet confirmed:', result.message);
-                    }
-                } catch (error) {
-                    clearInterval(timerInterval);
-                    clearInterval(checkInterval);
-                    statusElement.textContent = 'Lỗi hệ thống, vui lòng thử lại!';
-                    statusElement.className = 'failure';
-                    setTimeout(() => paymentModal.querySelector('.btn-close').click(), 2000);
+                    setTimeout(() => paymentModal.querySelector('.btn-close').click(), 3000);
+                    setTimeout(() => window.location.reload(), 3500);
+                } else {
+                    console.log('Payment not yet confirmed:', result.message);
                 }
-            }, 3000);
+            } catch (error) {
+                statusElement.textContent = 'Lỗi hệ thống, vui lòng thử lại!';
+                statusElement.className = 'failure';
+                setTimeout(() => paymentModal.querySelector('.btn-close').click(), 2000);
+            }
         }
     });
 </script>

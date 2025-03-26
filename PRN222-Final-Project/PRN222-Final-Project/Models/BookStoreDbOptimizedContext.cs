@@ -39,7 +39,7 @@ public partial class BookStoreDbOptimizedContext : DbContext
     {
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD79765E53365");
+            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD797BDC42283");
 
             entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.AddedDate)
@@ -50,18 +50,18 @@ public partial class BookStoreDbOptimizedContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__Carts__ProductID__44FF419A");
+                .HasConstraintName("FK__Carts__ProductID__5812160E");
 
             entity.HasOne(d => d.User).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Carts__UserID__440B1D61");
+                .HasConstraintName("FK__Carts__UserID__571DF1D5");
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B87ACA3B8");
+            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B121F0506");
 
-            entity.HasIndex(e => e.CategoryName, "UQ__Categori__8517B2E093516A0A").IsUnique();
+            entity.HasIndex(e => e.CategoryName, "UQ__Categori__8517B2E07B0FBFB1").IsUnique();
 
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.CategoryName).HasMaxLength(50);
@@ -70,7 +70,7 @@ public partial class BookStoreDbOptimizedContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF007EB28F");
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF1707A2B5");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.OrderDate)
@@ -86,16 +86,16 @@ public partial class BookStoreDbOptimizedContext : DbContext
 
             entity.HasOne(d => d.Status).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.StatusId)
-                .HasConstraintName("FK__Orders__StatusID__3A81B327");
+                .HasConstraintName("FK__Orders__StatusID__4D94879B");
 
             entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Orders__UserID__398D8EEE");
+                .HasConstraintName("FK__Orders__UserID__4CA06362");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CA880A80C");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CB13A8360");
 
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
@@ -104,18 +104,18 @@ public partial class BookStoreDbOptimizedContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__OrderDeta__Order__3E52440B");
+                .HasConstraintName("FK__OrderDeta__Order__5165187F");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__OrderDeta__Produ__3F466844");
+                .HasConstraintName("FK__OrderDeta__Produ__52593CB8");
         });
 
         modelBuilder.Entity<OrderStatus>(entity =>
         {
-            entity.HasKey(e => e.StatusId).HasName("PK__OrderSta__C8EE2043FCA1FBC0");
+            entity.HasKey(e => e.StatusId).HasName("PK__OrderSta__C8EE2043FA3BC6A6");
 
-            entity.HasIndex(e => e.StatusName, "UQ__OrderSta__05E7698AF92599AD").IsUnique();
+            entity.HasIndex(e => e.StatusName, "UQ__OrderSta__05E7698A5D7ECA26").IsUnique();
 
             entity.Property(e => e.StatusId).HasColumnName("StatusID");
             entity.Property(e => e.Description).HasMaxLength(100);
@@ -124,7 +124,7 @@ public partial class BookStoreDbOptimizedContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6ED2417C0D5");
+            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6ED386B57D7");
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.Author).HasMaxLength(100);
@@ -139,14 +139,14 @@ public partial class BookStoreDbOptimizedContext : DbContext
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK__Products__Catego__31EC6D26");
+                .HasConstraintName("FK__Products__Catego__44FF419A");
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3AC390A77B");
+            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3A15A60B44");
 
-            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B61600EEEEC96").IsUnique();
+            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B6160CD98008B").IsUnique();
 
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
             entity.Property(e => e.Description).HasMaxLength(100);
@@ -155,11 +155,11 @@ public partial class BookStoreDbOptimizedContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC58900CB8");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACEA6D2291");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E452BAE607").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E48384A31F").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534325289E1").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D105345709DF58").IsUnique();
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.Address).HasMaxLength(200);
@@ -175,7 +175,7 @@ public partial class BookStoreDbOptimizedContext : DbContext
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK__Users__RoleID__2A4B4B5E");
+                .HasConstraintName("FK__Users__RoleID__3D5E1FD2");
         });
 
         OnModelCreatingPartial(modelBuilder);
