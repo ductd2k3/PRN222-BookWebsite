@@ -1,4 +1,5 @@
-﻿using PRN222_Final_Project.Repositories.Interface;
+﻿using Microsoft.EntityFrameworkCore;
+using PRN222_Final_Project.Repositories.Interface;
 using PRN222_Final_Project.Services.Interface;
 
 namespace PRN222_Final_Project.Services.Implementation

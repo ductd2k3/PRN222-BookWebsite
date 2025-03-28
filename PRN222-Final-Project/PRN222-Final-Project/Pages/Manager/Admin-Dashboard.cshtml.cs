@@ -9,15 +9,15 @@ namespace PRN222_Final_Project.Pages.Manager
     public class Admin_DashboardModel : PageModel
     {
         private readonly IBookService _bookService;
-        private readonly IGenericService<Cart> genericServiceCart;
+        private readonly IGenericService<OrderDetail> _genericServiceOrderDetail;
         private readonly IUserService _userService;
 
         public Admin_DashboardModel(IBookService bookService
-            , IGenericService<Cart> genericServiceCart
+            , IGenericService<OrderDetail> genericServiceOrderDetail
             , IUserService userService)
         {
             _bookService = bookService;
-            this.genericServiceCart = genericServiceCart;
+            _genericServiceOrderDetail = genericServiceOrderDetail;
             _userService = userService;
         }
 
@@ -33,14 +33,14 @@ namespace PRN222_Final_Project.Pages.Manager
             var users = await _userService.GetAllAsync();
             totalUsers = users?.Count() ?? 0;
 
-            var carts = await genericServiceCart.GetAllAsync();
-            totalOrder = carts?.Count() ?? 0;
+            var orderDetails = await _genericServiceOrderDetail.GetAllAsync();
+            totalOrder = orderDetails?.Count() ?? 0;
 
-            if (carts != null)
+            if (orderDetails != null)
             {
-                foreach (var cart in carts)
+                foreach (var order in orderDetails)
                 {
-                    totalPrice += cart.Quantity * cart.Product.Price;
+                    totalPrice += order.Quantity * order.UnitPrice;
                 }
             }
 

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PRN222_Final_Project.Pages.User
 {
@@ -22,6 +23,7 @@ namespace PRN222_Final_Project.Pages.User
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
+        private readonly IGenericService<Models.User> _user;
 
         public CartModel(IGenericService<Cart> cart,
                          IGenericService<Product> product,
@@ -30,7 +32,8 @@ namespace PRN222_Final_Project.Pages.User
                          IHubContext<OrderHub> hubContext,
                          IHttpClientFactory httpClientFactory,
                          IConfiguration configuration,
-                         IEmailService emailService)
+                         IEmailService emailService,
+                         IGenericService<Models.User> user)
         {
             _cart = cart;
             _product = product;
@@ -40,6 +43,7 @@ namespace PRN222_Final_Project.Pages.User
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
             _emailService = emailService;
+            _user = user;
         }
 
         public List<CartViewModel> ListCart { get; set; }
@@ -63,12 +67,13 @@ namespace PRN222_Final_Project.Pages.User
                                 where cart.UserId == userID
                                 select new CartViewModel
                                 {
-                                    ProductId = cart.ProductId,
+                                    ProductId = cart.ProductId ?? 0, // Xử lý nullable
                                     UserId = cart.UserId,
                                     Quantity = cart.Quantity,
                                     AddedDate = cart.AddedDate,
                                     ProductName = product.Title,
-                                    Price = product.Price
+                                    Price = product.Price,
+                                    Image = product.ImageUrl
                                 }).ToList();
             TotalPages = (int)Math.Ceiling((double)filteredCart.Count / PageSize);
             ListCart = filteredCart.Skip((pageNumber - 1) * PageSize).Take(PageSize).ToList();
@@ -138,8 +143,8 @@ namespace PRN222_Final_Project.Pages.User
 
             return RedirectToPage();
         }
-
-        public async Task<IActionResult> OnPostPayment(string address)
+        private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        public async Task<IActionResult> OnPostPayment(string address, int[] selectedItems)
         {
             string userIdString = HttpContext.Session.GetString("UserID");
             string userName = HttpContext.Session.GetString("UserName") ?? "Khách hàng";
@@ -148,16 +153,29 @@ namespace PRN222_Final_Project.Pages.User
                 return RedirectToPage("/User/Login");
             }
 
+            if (selectedItems == null || !selectedItems.Any())
+            {
+                TempData["ErrorMessage"] = "Vui lòng chọn ít nhất một sản phẩm để thanh toán!";
+                return RedirectToPage();
+            }
+
             int userID = int.Parse(userIdString);
             var cartItems = await _cart.GetAllAsync();
             var products = await _product.GetAllAsync();
-
+            var users = await _user.GetAllAsync();
+            var currentUser = users.FirstOrDefault(u => u.UserId == userID);
+            if (currentUser == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy thông tin người dùng!";
+                return RedirectToPage();
+            }
+            var selectedItemsList = selectedItems.ToList();
             var listCart = (from cart in cartItems
                             join product in products on cart.ProductId equals product.ProductId
-                            where cart.UserId == userID
+                            where cart.UserId == userID && cart.ProductId.HasValue && selectedItemsList.Contains(cart.ProductId.Value)
                             select new CartViewModel
                             {
-                                ProductId = cart.ProductId,
+                                ProductId = cart.ProductId ?? 0,
                                 UserId = cart.UserId,
                                 Quantity = cart.Quantity,
                                 AddedDate = cart.AddedDate,
@@ -167,90 +185,155 @@ namespace PRN222_Final_Project.Pages.User
 
             if (!listCart.Any())
             {
-                TempData["ErrorMessage"] = "Giỏ hàng của bạn đang trống!";
+                TempData["ErrorMessage"] = "Vui lòng chọn ít nhất một sản phẩm để thanh toán!";
+                return RedirectToPage();
+            }
+            decimal totalAmount = listCart.Sum(x => x.Quantity * x.Price) ?? 0;
+            bool canProceedWithOrder = true;
+            string errorMessage = string.Empty;
+            await semaphore.WaitAsync();
+            try
+            {
+                foreach (var item in listCart)
+                {
+                    var product = products.FirstOrDefault(p => p.ProductId == item.ProductId);
+                    if (product == null)
+                    {
+                        canProceedWithOrder = false;
+                        errorMessage = $"Sản phẩm {item.ProductName} không tồn tại!";
+                        break;
+                    }
+                    if (product.Stock < item.Quantity)
+                    {
+                        var otherCartItems = cartItems.Where(c => c.ProductId == item.ProductId && c.UserId != userID).ToList();
+                        if (otherCartItems.Any())
+                        {
+                            var otherUserIds = otherCartItems.Select(c => c.UserId).Distinct().ToList();
+                            var otherUsers = users.Where(u => otherUserIds.Contains(u.UserId)).ToList();
+                            var higherPriorityUser = otherUsers.FirstOrDefault(u => u.TotalAmount > (currentUser.TotalAmount ?? 0));
+                            if (higherPriorityUser != null)
+                            {
+                                canProceedWithOrder = false;
+                                errorMessage = $"Sản phẩm {item.ProductName} đã hết hàng! Ưu tiên cho người dùng có điểm mua hàng cao hơn.";
+                                break;
+                            }
+                        }
+                        if (product.Stock < item.Quantity)
+                        {
+                            canProceedWithOrder = false;
+                            errorMessage = $"Sản phẩm {item.ProductName} đã hết hàng!";
+                            break;
+                        }
+                    }
+                }
+                if (canProceedWithOrder)
+                {
+                    var newOrder = new Order
+                    {
+                        UserId = userID,
+                        OrderDate = DateTime.Now,
+                        TotalAmount = totalAmount,
+                        StatusId = 1,
+                        ShippingAddress = address,
+                        PaymentMethod = "Bank Transfer"
+                    };
+
+                    await _order.AddAsync(newOrder);
+                    int orderId = newOrder.OrderId;
+
+                    foreach (var item in listCart)
+                    {
+                        var orderDetail = new OrderDetail
+                        {
+                            OrderId = orderId,
+                            ProductId = item.ProductId,
+                            Quantity = item.Quantity ?? 0,
+                            UnitPrice = item.Price
+                        };
+                        await _orderDetail.AddAsync(orderDetail);
+
+                        var product = products.FirstOrDefault(p => p.ProductId == item.ProductId);
+                        if (product != null)
+                        {
+                            product.Stock -= item.Quantity ?? 0;
+                            await _product.UpdateAsync(product);
+                        }
+                    }
+                    var selectedCartItems = cartItems
+                        .Where(c => c.UserId == userID && c.ProductId.HasValue && selectedItemsList.Contains(c.ProductId.Value))
+                        .ToList();
+
+                    Console.WriteLine($"Số lượng mục trong selectedCartItems: {selectedCartItems.Count}");
+                    foreach (var item in selectedCartItems)
+                    {
+                        await _cart.DeleteAsync(item.CartId);
+                    }
+                    currentUser.TotalAmount = (currentUser.TotalAmount ?? 0) + totalAmount;
+                    await _user.UpdateAsync(currentUser);
+
+                    await _hubContext.Clients.All.SendAsync("ReceiveOrderNotification", orderId, userName, totalAmount);
+                }
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+
+            if (!canProceedWithOrder)
+            {
+                TempData["ErrorMessage"] = errorMessage;
                 return RedirectToPage();
             }
 
-            decimal totalAmount = listCart.Sum(x => x.Quantity * x.Price) ?? 0;
-            var newOrder = new Order
-            {
-                UserId = userID,
-                OrderDate = DateTime.Now,
-                TotalAmount = totalAmount,
-                StatusId = 1, // Chờ xác nhận
-                ShippingAddress = address,
-                PaymentMethod = "Bank Transfer" // Chuyển khoản ngân hàng
-            };
-
-            // Thêm đơn hàng
-            await _order.AddAsync(newOrder);
-            int orderId = newOrder.OrderId;
-
-            // Thêm chi tiết đơn hàng và cập nhật kho
-            foreach (var item in listCart)
-            {
-                var orderDetail = new OrderDetail
-                {
-                    OrderId = orderId,
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity ?? 0,
-                    UnitPrice = item.Price
-                };
-                await _orderDetail.AddAsync(orderDetail);
-
-                var product = products.FirstOrDefault(p => p.ProductId == item.ProductId);
-                if (product != null)
-                {
-                    product.Stock -= item.Quantity ?? 0;
-                    await _product.UpdateAsync(product);
-                }
-            }
-
-            // Thông báo qua SignalR
-            await _hubContext.Clients.All.SendAsync("ReceiveOrderNotification", orderId, userName, totalAmount);
-
-            return Page();
+            return RedirectToPage();
         }
-
-        public async Task<IActionResult> OnGetCheckPayment(string paymentCode, string address)
+        public async Task<IActionResult> OnGetCheckPayment(string paymentCode, string address, string selectedItems)
         {
             try
             {
-                var client = _httpClientFactory.CreateClient();
-                var apiKey = _configuration["Sepay:ApiKey"];
-                if (string.IsNullOrEmpty(apiKey))
-                {
-                    return new JsonResult(new { success = false, message = "API key không được cấu hình" });
-                }
+                //var client = _httpClientFactory.CreateClient();
+                //var apiKey = _configuration["Sepay:ApiKey"];
+                //if (string.IsNullOrEmpty(apiKey))
+                //{
+                //    return new JsonResult(new { success = false, message = "API key không được cấu hình" });
+                //}
 
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-                var url = "https://my.sepay.vn/userapi/transactions/list?account_number=00003480126&limit=20";
-                var response = await client.GetAsync(url);
+                //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+                //var url = "https://my.sepay.vn/userapi/transactions/list?account_number=00003480126&limit=20";
+                //var response = await client.GetAsync(url);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    return new JsonResult(new { success = false, message = $"Không thể kết nối tới Sepay API: {response.StatusCode} - {errorContent}" });
-                }
+                //if (!response.IsSuccessStatusCode)
+                //{
+                //    var errorContent = await response.Content.ReadAsStringAsync();
+                //    return new JsonResult(new { success = false, message = $"Không thể kết nối tới Sepay API: {response.StatusCode} - {errorContent}" });
+                //}
 
-                var json = await response.Content.ReadAsStringAsync();
-                var sepayResponse = JsonSerializer.Deserialize<SepayTransactionResponse>(json);
+                //var json = await response.Content.ReadAsStringAsync();
+                //var sepayResponse = JsonSerializer.Deserialize<SepayTransactionResponse>(json);
 
-                if (sepayResponse?.Status != 200 || sepayResponse?.Messages?.Success != true)
-                {
-                    return new JsonResult(new { success = false, message = "Phản hồi từ Sepay không thành công" });
-                }
+                //if (sepayResponse?.Status != 200 || sepayResponse?.Messages?.Success != true)
+                //{
+                //    return new JsonResult(new { success = false, message = "Phản hồi từ Sepay không thành công" });
+                //}
 
-                var matchedTransaction = sepayResponse.Transactions?.FirstOrDefault(tx =>
-                    tx.TransactionContent?.Trim().ToLower() == paymentCode?.Trim().ToLower());
+                //var matchedTransaction = sepayResponse.Transactions?.FirstOrDefault(tx =>
+                //    tx.TransactionContent?.Trim().ToLower() == paymentCode?.Trim().ToLower());
 
-                if (matchedTransaction != null)
-                {
-                    await OnPostPayment(address); // Xử lý đơn hàng khi thanh toán khớp
-                    return new JsonResult(new { success = true, message = "Thanh toán thành công!" });
-                }
+                //if (matchedTransaction != null)
+                //{
+                //    if (string.IsNullOrEmpty(selectedItems))
+                //    {
+                //        return new JsonResult(new { success = false, message = "Danh sách sản phẩm được chọn không hợp lệ" });
+                //    }
 
-                return new JsonResult(new { success = false, message = "Chưa tìm thấy giao dịch khớp" });
+                //    int[] selectedItemIds = selectedItems.Split(',').Select(int.Parse).ToArray();
+                //    await OnPostPayment(address, selectedItemIds); // Gọi thanh toán với các sản phẩm được chọn
+                //    return new JsonResult(new { success = true, message = "Thanh toán thành công!" });
+                //}
+                int[] selectedItemIds = selectedItems.Split(',').Select(int.Parse).ToArray();
+                await OnPostPayment(address, selectedItemIds);
+                return new JsonResult(new { success = true, message = "Thanh toán thành công!" });
+                //return new JsonResult(new { success = false, message = "Chưa tìm thấy giao dịch khớp" });
             }
             catch (Exception ex)
             {
@@ -258,7 +341,7 @@ namespace PRN222_Final_Project.Pages.User
             }
         }
 
-        public async Task<IActionResult> OnGetSendConfirmationEmail(string address)
+        public async Task<IActionResult> OnGetSendConfirmationEmail(string address, string selectedItems)
         {
             try
             {
@@ -284,9 +367,17 @@ namespace PRN222_Final_Project.Pages.User
                     return new JsonResult(new { success = false, message = "Không tìm thấy đơn hàng" });
                 }
 
+                if (string.IsNullOrEmpty(selectedItems))
+                {
+                    return new JsonResult(new { success = false, message = "Danh sách sản phẩm được chọn không hợp lệ" });
+                }
+
+                int[] selectedItemIds = selectedItems.Split(',').Select(int.Parse).ToArray();
+                var selectedItemIdsList = selectedItemIds.ToList();
+
                 var cartDetails = (from cart in cartItems
                                    join product in products on cart.ProductId equals product.ProductId
-                                   where cart.UserId == userId
+                                   where cart.UserId == userId && cart.ProductId.HasValue && selectedItemIdsList.Contains(cart.ProductId.Value)
                                    select new CartViewModel
                                    {
                                        ProductName = product.Title,
@@ -294,7 +385,6 @@ namespace PRN222_Final_Project.Pages.User
                                        Price = product.Price
                                    }).ToList();
 
-                // Tạo nội dung email chuyên nghiệp
                 string orderDetailsHtml = string.Join("", cartDetails.Select(item =>
                     $"<tr><td>{item.ProductName}</td><td>{item.Quantity}</td><td>{item.Price:N0} đ</td><td>{(item.Quantity * item.Price):N0} đ</td></tr>"));
                 decimal totalAmount = cartDetails.Sum(x => x.Quantity * x.Price) ?? 0;
@@ -358,11 +448,7 @@ namespace PRN222_Final_Project.Pages.User
 </html>",
                     IsHtml = true
                 };
-                // Xóa giỏ hàng
-                foreach (var item in cartItems.Where(c => c.UserId == userId))
-                {
-                    await _cart.DeleteAsync(item.CartId);
-                }
+
                 await _emailService.SendEmailAsync(emailMessage);
                 return new JsonResult(new { success = true, message = "Email xác nhận đã được gửi" });
             }

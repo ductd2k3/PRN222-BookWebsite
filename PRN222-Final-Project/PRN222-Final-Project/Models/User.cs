@@ -19,6 +19,8 @@ public partial class User
 
     public string? Address { get; set; }
 
+    public decimal? TotalAmount { get; set; }
+
     public DateTime? CreatedAt { get; set; }
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
