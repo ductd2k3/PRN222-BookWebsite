@@ -79,6 +79,7 @@ namespace PRN222_Final_Project
             app.MapHub<OrderHub>("/orderhub");
 
             app.Run();
+            //app.Run("http://192.168.137.1:7253");
         }
     }
 }
