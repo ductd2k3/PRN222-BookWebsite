@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PRN222_Final_Project.ModelDto;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Repositories.Interface;
 
@@ -53,6 +54,45 @@ namespace PRN222_Final_Project.Repositories.Implementation
                 .ToListAsync();
 
             return (items, totalCount);
+        }
+
+        public async Task<ProductStatistic> GetBookStatisticAsync(int top)
+        {
+            var TotalBook = await _context.OrderDetails
+                                    .Where(od => od.Order.StatusId == 3)
+                                    .SumAsync(od => od.Quantity);
+
+            var TopProductsSeller = await _context.OrderDetails
+                                                .Where(od => od.Order.StatusId == 3)
+                                                .GroupBy(od => od.Product)
+                                                .Select(g => new ProductStatisticDTO
+                                                {
+                                                    ProductId = g.Key.ProductId,
+                                                    Title = g.Key.Title,
+                                                    TotalSold = g.Sum(od => od.Quantity),
+                                                })
+                                                .OrderByDescending(x => x.TotalSold)
+                                                .Take(top)
+                                                .ToListAsync();
+
+            var bestCategory = await _context.OrderDetails
+                .Where(od => od.Order.StatusId == 3)
+                .GroupBy(od => od.Product.Category)
+                .Select(g => new
+                {
+                    Category = g.Key,
+                    TotalSold = g.Sum(od => od.Quantity)
+                })
+                .OrderByDescending(x => x.TotalSold)
+                .Select(x => x.Category)
+                .FirstOrDefaultAsync();
+
+            return new ProductStatistic
+            {
+                TotalBook = TotalBook,
+                TopProductsSeller = TopProductsSeller,
+                BestCategory = bestCategory
+            };
         }
     }
 }

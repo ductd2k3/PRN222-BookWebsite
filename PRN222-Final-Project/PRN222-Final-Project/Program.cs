@@ -71,6 +71,7 @@ namespace PRN222_Final_Project
             app.UseRouting();
             app.UseAuthorization();
             app.MapFallbackToPage("/User/Home");
+            //app.MapFallbackToPage("/Manager/Admin-Dashboard");
             // **Enable Session Middleware**
             app.UseSession();
 

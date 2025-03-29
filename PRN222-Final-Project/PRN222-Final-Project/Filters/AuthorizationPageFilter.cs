@@ -13,34 +13,34 @@ namespace PRN222_Final_Project.Filters
 
         public void OnPageHandlerExecuting(PageHandlerExecutingContext context)
         {
-            var httpContext = context.HttpContext;
+            //var httpContext = context.HttpContext;
 
-            // Kiểm tra đăng nhập qua session
-            var role = httpContext.Session.GetString("Role");
+            //// Kiểm tra đăng nhập qua session
+            //var role = httpContext.Session.GetString("Role");
 
-            var pagePath = context.ActionDescriptor.DisplayName.ToLower();
+            //var pagePath = context.ActionDescriptor.DisplayName.ToLower();
 
-            // Quyền cho Admin
-            if (pagePath.Contains("admin") && role != "Admin")
-            {
-                context.Result = new RedirectToPageResult("/Error/AccessDenied");
-                return;
-            }
+            //// Quyền cho Admin
+            //if (pagePath.Contains("admin") && role != "Admin")
+            //{
+            //    context.Result = new RedirectToPageResult("/Error/AccessDenied");
+            //    return;
+            //}
 
-            // Quyền cho Customer (các trang chỉ dành riêng cho Customer)
-            if ((pagePath.Contains("profile") || pagePath.Contains("cart") ||
-                 (pagePath.Contains("order") && !pagePath.Contains("staff"))) && role != "Customer")
-            {
-                context.Result = new RedirectToPageResult("/Error/AccessDenied");
-                return;
-            }
+            //// Quyền cho Customer (các trang chỉ dành riêng cho Customer)
+            //if ((pagePath.Contains("profile") || pagePath.Contains("cart") ||
+            //     (pagePath.Contains("order") && !pagePath.Contains("staff"))) && role != "Customer")
+            //{
+            //    context.Result = new RedirectToPageResult("/Error/AccessDenied");
+            //    return;
+            //}
 
-            // Quyền cho Staff
-            if (pagePath.Contains("staff") && role != "Staff")
-            {
-                context.Result = new RedirectToPageResult("/Error/AccessDenied");
-                return;
-            }
+            //// Quyền cho Staff
+            //if (pagePath.Contains("staff") && role != "Staff")
+            //{
+            //    context.Result = new RedirectToPageResult("/Error/AccessDenied");
+            //    return;
+            //}
         }
 
         public void OnPageHandlerExecuted(PageHandlerExecutedContext context)

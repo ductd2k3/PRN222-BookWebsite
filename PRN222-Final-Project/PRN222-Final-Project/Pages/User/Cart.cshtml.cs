@@ -290,50 +290,10 @@ namespace PRN222_Final_Project.Pages.User
         public async Task<IActionResult> OnGetCheckPayment(string paymentCode, string address, string selectedItems)
         {
             try
-            {
-                //var client = _httpClientFactory.CreateClient();
-                //var apiKey = _configuration["Sepay:ApiKey"];
-                //if (string.IsNullOrEmpty(apiKey))
-                //{
-                //    return new JsonResult(new { success = false, message = "API key không được cấu hình" });
-                //}
-
-                //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-                //var url = "https://my.sepay.vn/userapi/transactions/list?account_number=00003480126&limit=20";
-                //var response = await client.GetAsync(url);
-
-                //if (!response.IsSuccessStatusCode)
-                //{
-                //    var errorContent = await response.Content.ReadAsStringAsync();
-                //    return new JsonResult(new { success = false, message = $"Không thể kết nối tới Sepay API: {response.StatusCode} - {errorContent}" });
-                //}
-
-                //var json = await response.Content.ReadAsStringAsync();
-                //var sepayResponse = JsonSerializer.Deserialize<SepayTransactionResponse>(json);
-
-                //if (sepayResponse?.Status != 200 || sepayResponse?.Messages?.Success != true)
-                //{
-                //    return new JsonResult(new { success = false, message = "Phản hồi từ Sepay không thành công" });
-                //}
-
-                //var matchedTransaction = sepayResponse.Transactions?.FirstOrDefault(tx =>
-                //    tx.TransactionContent?.Trim().ToLower() == paymentCode?.Trim().ToLower());
-
-                //if (matchedTransaction != null)
-                //{
-                //    if (string.IsNullOrEmpty(selectedItems))
-                //    {
-                //        return new JsonResult(new { success = false, message = "Danh sách sản phẩm được chọn không hợp lệ" });
-                //    }
-
-                //    int[] selectedItemIds = selectedItems.Split(',').Select(int.Parse).ToArray();
-                //    await OnPostPayment(address, selectedItemIds); // Gọi thanh toán với các sản phẩm được chọn
-                //    return new JsonResult(new { success = true, message = "Thanh toán thành công!" });
-                //}
+            {               
                 int[] selectedItemIds = selectedItems.Split(',').Select(int.Parse).ToArray();
                 await OnPostPayment(address, selectedItemIds);
                 return new JsonResult(new { success = true, message = "Thanh toán thành công!" });
-                //return new JsonResult(new { success = false, message = "Chưa tìm thấy giao dịch khớp" });
             }
             catch (Exception ex)
             {

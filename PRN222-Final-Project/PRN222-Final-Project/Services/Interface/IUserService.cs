@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PRN222_Final_Project.ModelDto;
 using PRN222_Final_Project.Models;
 
 namespace PRN222_Final_Project.Services.Interface
@@ -11,5 +12,8 @@ namespace PRN222_Final_Project.Services.Interface
            int pageNumber = 1,
            int pageSize = 10);
         Task<bool> IsDuplicateEmail(string email, string username);
+        Task<IEnumerable<TopCustomer>> GetTopUser(int top);
+        Task<int> GetTotalBuyer();
+        Task<IEnumerable<StaffStatistic>> GetStaffStatistic(int top);
     }
 }

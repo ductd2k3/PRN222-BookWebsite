@@ -38,7 +38,7 @@ namespace PRN222_Final_Project.Pages.Manager
             var order = await _orderService.GetByIdAsync(id);
             if (status.Equals("confirm"))
             {
-                order.StatusId = 2;
+                order.StatusId = 3;
             }
             else
             {
