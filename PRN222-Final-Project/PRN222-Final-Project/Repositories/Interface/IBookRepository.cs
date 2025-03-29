@@ -1,4 +1,5 @@
-﻿using PRN222_Final_Project.Models;
+﻿using PRN222_Final_Project.ModelDto;
+using PRN222_Final_Project.Models;
 
 namespace PRN222_Final_Project.Repositories.Interface
 {
@@ -11,5 +12,7 @@ namespace PRN222_Final_Project.Repositories.Interface
         decimal? maxPrice = null,
         int pageNumber = 1,
         int pageSize = 10);
+
+        Task<ProductStatistic> GetBookStatisticAsync(int top);
     }
 }

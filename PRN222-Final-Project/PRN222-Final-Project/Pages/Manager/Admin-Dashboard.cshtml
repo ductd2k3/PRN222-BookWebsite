@@ -8,66 +8,125 @@
 <head>
     <link rel="stylesheet" href="~/css/admin_dashboard.css" asp-append-version="true" />
 </head>
-<div class="header">
-    <span>Dashboard</span>
-    <span class="user-info"><i class="fas fa-user me-2"></i> Admin</span>
-</div>
+<div>
+    <div class="header">
+        <span>Dashboard</span>
+        <span class="user-info"><i class="fas fa-user me-2"></i> Admin</span>
+    </div>
 
-<!-- Stats -->
-<div class="stats">
-    <div class="stat-card">
-        <i class="fas fa-book"></i>
-        <h3>Tổng Sách</h3>
-        <p>@(Model.totalBooks)</p>
+    <!-- 1. Thống kê về khách hàng -->
+    <div class="section">
+        <h2>Thống Kê Khách Hàng</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tổng Số Người Mua</th>
+                    <th>Top Khách Hàng</th>
+                    <th>Email</th>
+                    <th>Số Đơn Hàng</th>
+                    <th>Tổng Chi Tiêu</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="3">@Model.TotalBuyer</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                @foreach (var top in Model.TopUsers)
+                {
+                    <tr>
+                        <td> @top.UserName </td>
+                        <td> @top.UserEmail </td>
+                        <td> @top.TotalOrder </td>
+                        <td> @top.TotalPrice</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-    <div class="stat-card">
-        <i class="fas fa-shopping-cart"></i>
-        <h3>Đơn Hàng</h3>
-        <p>@(Model.totalOrder)</p>
-    </div>
-    <div class="stat-card">
-        <i class="fas fa-users"></i>
-        <h3>Khách Hàng</h3>
-        <p>@(Model.totalUsers)</p>
-    </div>
-    <div class="stat-card">
-        <i class="fas fa-money-bill"></i>
-        <h3>Doanh Thu</h3>
-        <p>@(Model.totalPrice)</p>
-    </div>
-</div>
 
-<!-- Recent Orders -->
-<div class="recent-orders">
-    <h2>Đơn Hàng Gần Đây</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Mã Đơn</th>
-                <th>Khách Hàng</th>
-                <th>Tổng Tiền</th>
-                <th>Trạng Thái</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>#00123</td>
-                <td>Nguyễn Văn A</td>
-                <td>250.000đ</td>
-                <td>Đã Giao</td>
-            </tr>
-            <tr>
-                <td>#00124</td>
-                <td>Trần Thị B</td>
-                <td>180.000đ</td>
-                <td>Đang Xử Lý</td>
-            </tr>
-            <tr>
-                <td>#00125</td>
-                <td>Lê Văn C</td>
-                <td>300.000đ</td>
-                <td>Chờ Xác Nhận</td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- 2. Thống kê doanh thu và đơn hàng -->
+    <div class="section">
+        <h2>Thống Kê Doanh Thu & Đơn Hàng</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tổng Doanh Thu</th>
+                    <th>Tổng Đơn Hàng</th>
+                    <th>Đã Hoàn Thành</th>
+                    <th>Đang Xử Lý</th>
+                    <th>Giá Trị Trung Bình Đơn Hàng</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.OrderStatistic.TotalAmount</td>
+                    <td>@Model.OrderStatistic.TotalOrder</td>
+                    <td>@Model.OrderStatistic.CompletedOrder</td>
+                    <td>@Model.OrderStatistic.ProcessedOrder</td>
+                    <td>@Model.OrderStatistic.AverageOrderValue</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 3. Thống kê về sách -->
+    <div class="section">
+        <h2>Thống Kê Sách</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tổng Số Sách Bán Ra</th>
+                    <th>Top Sách Bán Chạy</th>
+                    <th>Số Lượng Bán</th>
+                    <th>Danh Mục Ưa Thích</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="3">@Model.ProductStatistic.TotalBook</td>
+                    @if (Model.ProductStatistic.TopProductsSeller.Any())
+                    {
+                        var firstBook = Model.ProductStatistic.TopProductsSeller.First();
+                        <td>@firstBook.Title</td>
+                        <td>@firstBook.TotalSold</td>
+                        <td rowspan="3">@Model.ProductStatistic.BestCategory.CategoryName</td>
+                    }
+                </tr>
+                @foreach (var book in Model.ProductStatistic.TopProductsSeller.Skip(1))
+                {
+                    <tr>
+                        <td> @book.Title </td>
+                        <td> @book.TotalSold</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 4. Thống kê về nhân viên -->
+    <div class="section">
+        <h2>Thống Kê Nhân Viên</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tên Nhân Viên</th>
+                    <th>Tổng Đơn Hàng Xử Lý</th>
+                    <th>Doanh Thu Mang Lại</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var staff in Model.StaffStatistics){
+                    <tr>
+                        <td>@staff.staffName</td>
+                        <td>@staff.TotalOrders</td>
+                        <td>@staff.RevenueGenerated</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

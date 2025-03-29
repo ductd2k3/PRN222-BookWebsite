@@ -1,4 +1,5 @@
-﻿using PRN222_Final_Project.Models;
+﻿using PRN222_Final_Project.ModelDto;
+using PRN222_Final_Project.Models;
 
 namespace PRN222_Final_Project.Services.Interface
 {
@@ -10,5 +11,6 @@ namespace PRN222_Final_Project.Services.Interface
             int pageNumber = 1,
             int pageSize = 10
             );
+        Task<OrderStatistic> GetOrderStatisticAsync();
     }
 }

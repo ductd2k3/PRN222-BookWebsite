@@ -1,4 +1,5 @@
-﻿using PRN222_Final_Project.Models;
+﻿using PRN222_Final_Project.ModelDto;
+using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Repositories.Interface;
 using PRN222_Final_Project.Services.Interface;
 
@@ -21,6 +22,11 @@ namespace PRN222_Final_Project.Services.Implementation
         int pageSize = 10)
         {
             return _bookRepository.GetBooksAsync(searchTerm, categoryId, minPrice, maxPrice, pageNumber, pageSize);
+        }
+
+        public async Task<ProductStatistic> GetBookStatisticAsync(int top)
+        {
+            return await _bookRepository.GetBookStatisticAsync(top);
         }
     }
 }

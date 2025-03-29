@@ -1,115 +1,404 @@
--- Tạo database
-CREATE DATABASE BookStoreDB_Optimized;
+USE [BookStoreDB_Optimized]
 GO
-
--- Sử dụng database
-USE BookStoreDB_Optimized;
+/****** Object:  Table [dbo].[Carts]    Script Date: 3/29/2025 2:28:16 PM ******/
+SET ANSI_NULLS ON
 GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Carts](
+	[CartID] [int] IDENTITY(1,1) NOT NULL,
+	[UserID] [int] NULL,
+	[ProductID] [int] NULL,
+	[Quantity] [int] NOT NULL,
+	[AddedDate] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[CartID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Categories]    Script Date: 3/29/2025 2:28:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Categories](
+	[CategoryID] [int] IDENTITY(1,1) NOT NULL,
+	[CategoryName] [nvarchar](50) NOT NULL,
+	[Description] [nvarchar](200) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[CategoryID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[OrderDetails]    Script Date: 3/29/2025 2:28:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[OrderDetails](
+	[OrderDetailID] [int] IDENTITY(1,1) NOT NULL,
+	[OrderID] [int] NULL,
+	[ProductID] [int] NULL,
+	[Quantity] [int] NOT NULL,
+	[UnitPrice] [decimal](10, 2) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[OrderDetailID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Orders]    Script Date: 3/29/2025 2:28:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Orders](
+	[OrderID] [int] IDENTITY(1,1) NOT NULL,
+	[UserID] [int] NULL,
+	[OrderDate] [datetime] NULL,
+	[TotalAmount] [decimal](10, 2) NOT NULL,
+	[StatusID] [int] NULL,
+	[ShippingAddress] [nvarchar](200) NULL,
+	[PaymentMethod] [nvarchar](50) NULL,
+	[StaffId] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[OrderID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[OrderStatuses]    Script Date: 3/29/2025 2:28:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[OrderStatuses](
+	[StatusID] [int] IDENTITY(1,1) NOT NULL,
+	[StatusName] [nvarchar](20) NOT NULL,
+	[Description] [nvarchar](100) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[StatusID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Products]    Script Date: 3/29/2025 2:28:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Products](
+	[ProductID] [int] IDENTITY(1,1) NOT NULL,
+	[CategoryID] [int] NULL,
+	[Title] [nvarchar](100) NOT NULL,
+	[Author] [nvarchar](100) NULL,
+	[Price] [decimal](10, 2) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[Stock] [int] NULL,
+	[ImageURL] [nvarchar](200) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ProductID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Roles]    Script Date: 3/29/2025 2:28:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Roles](
+	[RoleID] [int] IDENTITY(1,1) NOT NULL,
+	[RoleName] [nvarchar](20) NOT NULL,
+	[Description] [nvarchar](100) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[RoleID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Users]    Script Date: 3/29/2025 2:28:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Users](
+	[UserID] [int] IDENTITY(1,1) NOT NULL,
+	[RoleID] [int] NULL,
+	[Username] [nvarchar](50) NOT NULL,
+	[Password] [nvarchar](100) NOT NULL,
+	[FullName] [nvarchar](100) NULL,
+	[Email] [nvarchar](100) NULL,
+	[Address] [nvarchar](200) NULL,
+	[TotalAmount] [decimal](18, 0) NULL,
+	[CreatedAt] [datetime] NULL,
+ CONSTRAINT [PK__Users__1788CCACEA6D2291] PRIMARY KEY CLUSTERED 
+(
+	[UserID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[Carts] ON 
 
--- Tạo bảng Roles
-CREATE TABLE Roles (
-    RoleID INT PRIMARY KEY IDENTITY(1,1),
-    RoleName NVARCHAR(20) UNIQUE NOT NULL,
-    [Description] NVARCHAR(100)
-);
+INSERT [dbo].[Carts] ([CartID], [UserID], [ProductID], [Quantity], [AddedDate]) VALUES (19, 10, 7, 2, CAST(N'2025-03-24T09:10:20.307' AS DateTime))
+INSERT [dbo].[Carts] ([CartID], [UserID], [ProductID], [Quantity], [AddedDate]) VALUES (20, 10, 13, 1, CAST(N'2025-03-24T09:12:49.157' AS DateTime))
+INSERT [dbo].[Carts] ([CartID], [UserID], [ProductID], [Quantity], [AddedDate]) VALUES (21, 10, 2, 1, CAST(N'2025-03-24T09:13:05.433' AS DateTime))
+INSERT [dbo].[Carts] ([CartID], [UserID], [ProductID], [Quantity], [AddedDate]) VALUES (46, 13, 17, 1, CAST(N'2025-03-29T14:08:34.273' AS DateTime))
+INSERT [dbo].[Carts] ([CartID], [UserID], [ProductID], [Quantity], [AddedDate]) VALUES (47, 13, 16, 1, CAST(N'2025-03-29T14:08:38.477' AS DateTime))
+SET IDENTITY_INSERT [dbo].[Carts] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Categories] ON 
 
--- Tạo bảng Users
-CREATE TABLE Users (
-    UserID INT PRIMARY KEY IDENTITY(1,1),
-    RoleID INT,
-    Username NVARCHAR(50) UNIQUE NOT NULL,
-    [Password] NVARCHAR(100) NOT NULL,
-    FullName NVARCHAR(100),
-    Email NVARCHAR(100) UNIQUE,
-    [Address] NVARCHAR(200),
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
-);
+INSERT [dbo].[Categories] ([CategoryID], [CategoryName], [Description]) VALUES (1, N'Văn học', N'Sách văn học Việt Nam ')
+INSERT [dbo].[Categories] ([CategoryID], [CategoryName], [Description]) VALUES (2, N'Khoa học', N'Sách khoa học phổ thông')
+INSERT [dbo].[Categories] ([CategoryID], [CategoryName], [Description]) VALUES (3, N'Thiếu nhi', N'Sách dành cho trẻ em')
+INSERT [dbo].[Categories] ([CategoryID], [CategoryName], [Description]) VALUES (4, N'Tiểu thuyết', N'Sách tiểu thuyết của Việt Nam và Thế Giới')
+SET IDENTITY_INSERT [dbo].[Categories] OFF
+GO
+SET IDENTITY_INSERT [dbo].[OrderDetails] ON 
 
--- Tạo bảng Categories
-CREATE TABLE Categories (
-    CategoryID INT PRIMARY KEY IDENTITY(1,1),
-    CategoryName NVARCHAR(50) UNIQUE NOT NULL,
-    Description NVARCHAR(200)
-);
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (1, 2, 7, 1, CAST(222.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (2, 2, 12, 3, CAST(123.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (3, 3, 10, 1, CAST(2222222.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (4, 4, 7, 4, CAST(222.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (5, 4, 10, 2, CAST(2222222.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (6, 5, 10, 9, CAST(2222222.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (7, 6, 10, 2, CAST(2222222.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (8, 7, 7, 1, CAST(222.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (9, 8, 7, 1, CAST(222.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (10, 9, 7, 10, CAST(222.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (11, 10, 7, 10, CAST(222.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (12, 11, 9, 17, CAST(123.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (13, 12, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (14, 12, 13, 1, CAST(18000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (15, 13, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (16, 13, 13, 1, CAST(1000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (17, 13, 16, 1, CAST(180000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (27, 24, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (29, 23, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (32, 26, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (34, 27, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (35, 28, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (36, 30, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (37, 31, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (38, 32, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (39, 29, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (61, 47, 16, 1, CAST(180000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (62, 48, 2, 1, CAST(17000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (63, 49, 16, 1, CAST(180000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (64, 49, 7, 1, CAST(21000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (65, 50, 2, 2, CAST(17000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (66, 51, 17, 22, CAST(220000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (67, 52, 16, 8, CAST(180000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (68, 53, 2, 9, CAST(17000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (69, 54, 4, 11, CAST(11000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (70, 55, 6, 14, CAST(13000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (71, 56, 1, 20, CAST(15999.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (72, 59, 17, 1, CAST(220000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (73, 60, 2, 1, CAST(17000.00 AS Decimal(10, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (74, 61, 7, 3, CAST(21000.00 AS Decimal(10, 2)))
+SET IDENTITY_INSERT [dbo].[OrderDetails] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Orders] ON 
 
--- Tạo bảng Products
-CREATE TABLE Products (
-    ProductID INT PRIMARY KEY IDENTITY(1,1),
-    CategoryID INT,
-    Title NVARCHAR(100) NOT NULL,
-    Author NVARCHAR(100),
-    Price DECIMAL(10,2) NOT NULL, -- Giảm từ DECIMAL(18,2) xuống DECIMAL(10,2)
-    [Description] NVARCHAR(500),
-    Stock INT DEFAULT 0,
-    ImageURL NVARCHAR(200),
-    CONSTRAINT chk_stock CHECK (Stock >= 0), -- Ràng buộc không âm
-    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
-);
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (2, 2, CAST(N'2025-03-12T15:26:57.243' AS DateTime), CAST(591.00 AS Decimal(10, 2)), 3, N'df -.235435435', N'COD', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (3, 2, CAST(N'2025-03-15T18:25:13.947' AS DateTime), CAST(2222222.00 AS Decimal(10, 2)), 1, N'h', N'COD', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (4, 2, CAST(N'2025-03-17T15:01:07.433' AS DateTime), CAST(4445332.00 AS Decimal(10, 2)), 3, N'hello world', N'COD', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (5, 2, CAST(N'2025-03-19T13:48:54.580' AS DateTime), CAST(19999998.00 AS Decimal(10, 2)), 3, N'ngu', N'COD', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (6, 2, CAST(N'2025-03-23T19:40:01.757' AS DateTime), CAST(4444444.00 AS Decimal(10, 2)), 3, N'123', N'COD', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (7, 4, CAST(N'2025-03-23T20:51:50.590' AS DateTime), CAST(222.00 AS Decimal(10, 2)), 3, N'123', N'COD', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (8, 2, CAST(N'2025-03-23T20:54:13.670' AS DateTime), CAST(222.00 AS Decimal(10, 2)), 3, N'123', N'COD', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (9, 2, CAST(N'2025-03-23T21:47:03.543' AS DateTime), CAST(2220.00 AS Decimal(10, 2)), 3, N'123', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (10, 10, CAST(N'2025-03-23T22:14:11.930' AS DateTime), CAST(2220.00 AS Decimal(10, 2)), 3, N'123', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (11, 10, CAST(N'2025-03-23T22:21:13.243' AS DateTime), CAST(2091.00 AS Decimal(10, 2)), 3, N'123', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (12, 13, CAST(N'2025-03-24T09:35:55.297' AS DateTime), CAST(39000.00 AS Decimal(10, 2)), 1, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (13, 13, CAST(N'2025-03-26T15:58:50.427' AS DateTime), CAST(202000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (14, 13, CAST(N'2025-03-26T16:09:53.783' AS DateTime), CAST(1000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (16, 13, CAST(N'2025-03-26T16:09:56.757' AS DateTime), CAST(1000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (17, 13, CAST(N'2025-03-26T16:10:39.877' AS DateTime), CAST(1000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (18, 13, CAST(N'2025-03-26T16:10:42.167' AS DateTime), CAST(1000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (19, 13, CAST(N'2025-03-26T16:11:51.100' AS DateTime), CAST(1000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 15)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (21, 13, CAST(N'2025-03-26T16:13:58.230' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 15)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (22, 13, CAST(N'2025-03-26T16:14:36.723' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 15)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (23, 13, CAST(N'2025-03-26T16:14:36.823' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 1, N'Hà Nội - 0963603557', N'Bank Transfer', 16)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (24, 13, CAST(N'2025-03-26T16:14:36.830' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 16)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (25, 13, CAST(N'2025-03-26T16:14:36.840' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 16)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (26, 13, CAST(N'2025-03-26T16:14:36.873' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 16)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (27, 13, CAST(N'2025-03-26T16:15:02.770' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (28, 13, CAST(N'2025-03-26T16:15:02.803' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (29, 13, CAST(N'2025-03-26T16:15:02.807' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (30, 13, CAST(N'2025-03-26T16:15:02.803' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (31, 13, CAST(N'2025-03-26T16:15:02.803' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (32, 13, CAST(N'2025-03-26T16:15:02.813' AS DateTime), CAST(21000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (33, 13, CAST(N'2025-03-26T16:16:59.297' AS DateTime), CAST(1000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 15)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (34, 13, CAST(N'2025-03-26T16:18:03.870' AS DateTime), CAST(1000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 15)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (36, 13, CAST(N'2025-03-26T16:18:15.263' AS DateTime), CAST(1000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 15)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (37, 13, CAST(N'2025-03-26T16:23:13.350' AS DateTime), CAST(1000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 15)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (38, 13, CAST(N'2025-03-26T16:23:33.393' AS DateTime), CAST(180000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 16)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (39, 13, CAST(N'2025-03-26T16:28:17.750' AS DateTime), CAST(1000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 16)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (40, 13, CAST(N'2025-03-26T16:29:48.143' AS DateTime), CAST(181000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 16)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (41, 13, CAST(N'2025-03-26T16:30:13.410' AS DateTime), CAST(181000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 16)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (42, 13, CAST(N'2025-03-26T16:33:30.830' AS DateTime), CAST(180000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (43, 13, CAST(N'2025-03-26T16:36:58.040' AS DateTime), CAST(180000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (44, 13, CAST(N'2025-03-26T16:38:11.250' AS DateTime), CAST(180000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (46, 13, CAST(N'2025-03-26T16:38:35.360' AS DateTime), CAST(180000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 14)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (47, 13, CAST(N'2025-03-26T16:53:21.263' AS DateTime), CAST(180000.00 AS Decimal(10, 2)), 1, N'Hà Nội - 0963603557', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (48, 13, CAST(N'2025-03-26T16:53:31.207' AS DateTime), CAST(17000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (49, 13, CAST(N'2025-03-26T16:54:00.663' AS DateTime), CAST(201000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (50, 13, CAST(N'2025-03-26T16:54:43.227' AS DateTime), CAST(34000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (51, 13, CAST(N'2025-03-26T17:25:01.487' AS DateTime), CAST(4840000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (52, 13, CAST(N'2025-03-26T17:25:34.100' AS DateTime), CAST(1440000.00 AS Decimal(10, 2)), 1, N'Hà Nội - 0963603557', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (53, 13, CAST(N'2025-03-26T17:29:30.027' AS DateTime), CAST(153000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (54, 13, CAST(N'2025-03-26T17:30:31.637' AS DateTime), CAST(121000.00 AS Decimal(10, 2)), 3, N'Hà Nội - 0963603557', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (55, 2, CAST(N'2025-03-26T17:31:12.880' AS DateTime), CAST(182000.00 AS Decimal(10, 2)), 3, N'Phú đô , Nam từ liêm , Hà nội - 0355725203', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (56, 2, CAST(N'2025-03-26T17:32:46.843' AS DateTime), CAST(319980.00 AS Decimal(10, 2)), 3, N'Phú đô , Nam từ liêm , Hà nội - 0355725203', N'Bank Transfer', 5)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (59, 13, CAST(N'2025-03-29T13:23:16.537' AS DateTime), CAST(220000.00 AS Decimal(10, 2)), 1, N'Hà Nội - 0963603557', N'Bank Transfer', NULL)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (60, 13, CAST(N'2025-03-29T13:23:28.753' AS DateTime), CAST(17000.00 AS Decimal(10, 2)), 1, N'Hà Nội - 0963603557', N'Bank Transfer', NULL)
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [StatusID], [ShippingAddress], [PaymentMethod], [StaffId]) VALUES (61, 13, CAST(N'2025-03-29T13:26:41.947' AS DateTime), CAST(63000.00 AS Decimal(10, 2)), 1, N'Hà Nội - 0963603557', N'Bank Transfer', NULL)
+SET IDENTITY_INSERT [dbo].[Orders] OFF
+GO
+SET IDENTITY_INSERT [dbo].[OrderStatuses] ON 
 
--- Tạo bảng OrderStatuses
-CREATE TABLE OrderStatuses (
-    StatusID INT PRIMARY KEY IDENTITY(1,1),
-    StatusName NVARCHAR(20) UNIQUE NOT NULL,
-    [Description] NVARCHAR(100)
-);
+INSERT [dbo].[OrderStatuses] ([StatusID], [StatusName], [Description]) VALUES (1, N'Đặt hàng', N'Đã đặt hàng thành công ')
+INSERT [dbo].[OrderStatuses] ([StatusID], [StatusName], [Description]) VALUES (2, N'Chờ giao hàng', N'Đã xác nhận')
+INSERT [dbo].[OrderStatuses] ([StatusID], [StatusName], [Description]) VALUES (3, N'Đã giao hàng', N'Đã giao')
+INSERT [dbo].[OrderStatuses] ([StatusID], [StatusName], [Description]) VALUES (4, N'Đã hủy', N'Hủy đơn hàng')
+SET IDENTITY_INSERT [dbo].[OrderStatuses] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Products] ON 
 
--- Tạo bảng Orders
-CREATE TABLE Orders (
-    OrderID INT PRIMARY KEY IDENTITY(1,1),
-    UserID INT,
-    OrderDate DATETIME DEFAULT GETDATE(),
-    TotalAmount DECIMAL(10,2) NOT NULL,
-    StatusID INT DEFAULT 1, -- Mặc định là "Chờ xử lý"
-    ShippingAddress NVARCHAR(200),
-    PaymentMethod NVARCHAR(50),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID),
-    FOREIGN KEY (StatusID) REFERENCES OrderStatuses(StatusID)
-);
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (1, 2, N'Bí mật của nước	', N'Masaru Emoto	', CAST(15999.00 AS Decimal(10, 2)), N']Tác phẩm về ảnh hưởng của suy nghĩ con người lên nước.	', 10, N'/images/books/0ec2c126-e6a6-460e-87b6-8e6a62d83d8d.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (2, 2, N'Hành trình về phương Đông	', N'Baird T. Spalding	', CAST(17000.00 AS Decimal(10, 2)), N'Hành trình khám phá triết lý phương Đông của các nhà khoa học phương Tây.	', 9, N'/images/books/32cc63dc-ec3e-4129-b22a-fc53fc8f7380.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (3, 1, N'Bắt trẻ đồng xanh	', N'J.D. Salinger	', CAST(15000.00 AS Decimal(10, 2)), N'Câu chuyện về tuổi trẻ nổi loạn và sự mất mát.	', 7, N'/images/books/0923dd57-df41-4757-a0bb-fa8f09333ca1.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (4, 1, N'Vợ nhặt	', N'Kim Lân	', CAST(11000.00 AS Decimal(10, 2)), N'Câu chuyện cảm động về số phận con người trong nạn đói 1945.	', 10, N'/images/books/5e57f60f-3edb-4be2-8140-45d1d10403b3.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (6, 1, N'Số đỏ	', N'Vũ Trọng Phụng	', CAST(13000.00 AS Decimal(10, 2)), N'Tiểu thuyết trào phúng nổi tiếng về xã hội Việt Nam thời Pháp thuộc.	', 10, N'/images/books/57f85d04-388b-4ea5-b5a1-a9cd97359047.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (7, 4, N'Hai số phận', N'Jeffrey Archer	', CAST(21000.00 AS Decimal(10, 2)), N'Câu chuyện về thế giới mafia và gia đình Corleone.', 5, N'/images/books/8f073fe0-ab6e-4d9e-970c-01d860ccd580.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (8, 4, N'Ông già và biển cả', N'Ernest Hemingway	', CAST(14000.00 AS Decimal(10, 2)), N'Tiểu thuyết kinh điển kể về cuộc chiến đấu của ông lão Santiago với cá kiếm.', 22, N'/images/books/43e52d97-894a-4bfa-9b14-a949055de08f.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (9, 4, N'Nhà giả kim	', N'Paulo Coelho	', CAST(17000.00 AS Decimal(10, 2)), N'Một câu chuyện truyền cảm hứng về hành trình theo đuổi ước mơ.	', 41, N'/images/books/e5b247b1-55e2-4abb-bd83-32dd26f9925e.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (10, 3, N'Totto-chan bên cửa sổ', N'Tetsuko Kuroyanagi', CAST(13000.00 AS Decimal(10, 2)), N'Câu chuyện về một cô bé hiếu động và một trường học đặc biệt.', 11, N'/images/books/b8ee895d-87fb-4a1f-a585-7f0e1371d248.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (11, 3, N'Dế Mèn phiêu lưu ký', N'Tô Hoài	', CAST(11000.00 AS Decimal(10, 2)), N'Truyện thiếu nhi kể về cuộc phiêu lưu của Dế Mèn.', 20, N'/images/books/a85dc1be-7fec-43b8-8f98-294bad92b549.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (12, 2, N'Lược sử thời gian', N'Stephen Hawking', CAST(10000.00 AS Decimal(10, 2)), N'Một cuốn sách khoa học phổ thông về vũ trụ học.', 16, N'/images/books/ad35bc21-e859-487f-a321-cbca429fe08c.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (13, 2, N'Vũ trụ trong vỏ hạt dẻ', N'Stephen Hawking', CAST(1000.00 AS Decimal(10, 2)), N'Giải thích về vũ trụ, thời gian và vật lý lượng tử.', 27, N'/images/books/3c3833c8-5dd5-41e4-b0f9-b4c08d6dfe4a.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (14, 1, N'Nhật ký trong tù', N'Hồ Chí Minh', CAST(15000.00 AS Decimal(10, 2)), N'Tập thơ được sáng tác trong thời gian Hồ Chí Minh bị giam.', 13, N'/images/books/5bf5f53a-8a8e-46cc-a7ad-a3e9657a7a36.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (15, 1, N'Chí Phèo', N'Nam Cao	', CAST(12000.00 AS Decimal(10, 2)), N'Truyện ngắn nổi tiếng về cuộc đời bi kịch của Chí Phèo.', 20, N'/images/books/11c3adf7-7df7-4af4-8fd6-3e5eebce33bf.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (16, 4, N'Sự im lặng của bầy cừu	', N'Thomas Harris	', CAST(180000.00 AS Decimal(10, 2)), N'Tiểu thuyết trinh thám về bác sĩ tâm thần Hannibal Lecter.	', 10, N'/images/books/abe6573a-00ef-4145-9026-340c8dacdfbe.png')
+INSERT [dbo].[Products] ([ProductID], [CategoryID], [Title], [Author], [Price], [Description], [Stock], [ImageURL]) VALUES (17, 4, N'Sherlock Holmes toàn tập	', N'Arthur Conan Doyle	', CAST(220000.00 AS Decimal(10, 2)), N'Tuyển tập truyện trinh thám kinh điển về thám tử Sherlock Holmes.	', 9, N'/images/books/3f071efd-bace-43df-95b1-71a82e63e703.png')
+SET IDENTITY_INSERT [dbo].[Products] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Roles] ON 
 
--- Tạo bảng OrderDetails
-CREATE TABLE OrderDetails (
-    OrderDetailID INT PRIMARY KEY IDENTITY(1,1),
-    OrderID INT,
-    ProductID INT,
-    Quantity INT NOT NULL,
-    UnitPrice DECIMAL(10,2) NOT NULL,
-    CONSTRAINT chk_quantity_orderdetails CHECK (Quantity > 0), -- Ràng buộc Quantity > 0
-    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
-    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
-);
+INSERT [dbo].[Roles] ([RoleID], [RoleName], [Description]) VALUES (1, N'Admin', N'Qu?n tr? viên toàn quy?n')
+INSERT [dbo].[Roles] ([RoleID], [RoleName], [Description]) VALUES (2, N'Customer', N'Khách hàng thông thu?ng')
+INSERT [dbo].[Roles] ([RoleID], [RoleName], [Description]) VALUES (3, N'Staff', N'Nhân viên x? lý don hàng')
+SET IDENTITY_INSERT [dbo].[Roles] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Users] ON 
 
--- Tạo bảng Carts
-CREATE TABLE Carts (
-    CartID INT PRIMARY KEY IDENTITY(1,1),
-    UserID INT,
-    ProductID INT,
-    Quantity INT NOT NULL,
-    AddedDate DATETIME DEFAULT GETDATE(),
-    CONSTRAINT chk_quantity_carts CHECK (Quantity > 0), -- Ràng buộc Quantity > 0
-    FOREIGN KEY (UserID) REFERENCES Users(UserID),
-    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
-);
-
--- Thêm dữ liệu mẫu
--- Roles
-INSERT INTO Roles (RoleName, [Description])
-VALUES 
-    ('Admin', 'Quản trị viên toàn quyền'),
-    ('Customer', 'Khách hàng thông thường'),
-    ('Staff', 'Nhân viên xử lý đơn hàng');
-
--- Users (PasswordHash giả định đã mã hóa)
-INSERT INTO Users (RoleID, Username, [Password], FullName, Email, [Address])
-VALUES 
-    (1, 'admin', '123', 'Quản trị viên', 'admin@example.com', '123 Đường ABC, Hà Nội'),
-    (2, 'user1', '123', 'Nguyễn Văn A', 'user1@example.com', '456 Đường XYZ, TP.HCM'),
-    (2, 'user2', '123', 'Trần Thị B', 'user2@example.com', '789 Đường DEF, Đà Nẵng'),
-    (3, 'staff1', '123', 'Lê Văn C', 'staff1@example.com', '321 Đường GHI, Hà Nội');
-
--- Categories
-INSERT INTO Categories (CategoryName, [Description])
-VALUES 
-    ('Văn học', 'Sách văn học Việt Nam và thế giới'),
-    ('Khoa học', 'Sách khoa học phổ thông'),
-    ('Thiếu nhi', 'Sách dành cho trẻ em');
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (1, 1, N'admin', N'$2a$11$ZIHP.TK2lPzb2f.oKVc.SuWEd7NWUERYaT7SMODy2Wa0Rgy6SzxTK', N'a', N'a', N'123 Ðu?ng ABC, Hà N?i', NULL, NULL)
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (2, 2, N'user1', N'$2a$11$ZIHP.TK2lPzb2f.oKVc.SuWEd7NWUERYaT7SMODy2Wa0Rgy6SzxTK', N'Nguy?n Van A', N'user1@example.com', N'456 Ðu?ng XYZ, TP.HCM', CAST(511980 AS Decimal(18, 0)), CAST(N'2025-03-06T20:21:00.217' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (3, 2, N'user2', N'$2a$11$ZIHP.TK2lPzb2f.oKVc.SuWEd7NWUERYaT7SMODy2Wa0Rgy6SzxTK', N'Tr?n Th? B', N'user2@example.com', N'789 Ðu?ng DEF, Ðà N?ng', CAST(23000 AS Decimal(18, 0)), CAST(N'2025-03-06T20:21:00.217' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (4, 2, N'staff1', N'$2a$11$ZIHP.TK2lPzb2f.oKVc.SuWEd7NWUERYaT7SMODy2Wa0Rgy6SzxTK', N'Lê Van C', N'toanlv@gmail.com', N'321 Ðu?ng GHI, Hà N?i', CAST(35000 AS Decimal(18, 0)), CAST(N'2025-03-06T20:21:00.217' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (5, 3, N'staff11', N'$2a$11$dBulhfZ2XGDm5Qiqeu8FkOr3vgIJp6btEajSoe5GB2YcVPfjPbLnu', N'a', N'staff1@gmail.com', N'Hà nội', NULL, NULL)
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (9, 1, N'admin2', N'$2a$11$ZIHP.TK2lPzb2f.oKVc.SuWEd7NWUERYaT7SMODy2Wa0Rgy6SzxTK', N'a', N'admin@gmail.com', N'123', NULL, CAST(N'2025-03-10T11:44:22.880' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (10, 2, N'TranDinhDuc', N'$2a$11$ZIHP.TK2lPzb2f.oKVc.SuWEd7NWUERYaT7SMODy2Wa0Rgy6SzxTK', N'Trần Đình Đức', N'ductdhe176150@fpt.edu.vn', N'Hà Nội', CAST(30000 AS Decimal(18, 0)), CAST(N'2025-03-23T22:08:18.400' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (12, 2, N'TranDinhDuc1', N'$2a$11$dBulhfZ2XGDm5Qiqeu8FkOr3vgIJp6btEajSoe5GB2YcVPfjPbLnu', N'Trần Đình Đức', N'ductdhe176150@fpt.edu.v', N'Hà Nội', CAST(10000 AS Decimal(18, 0)), CAST(N'2025-03-23T22:27:38.887' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (13, 2, N'TranDinhDuc2', N'$2a$11$dBulhfZ2XGDm5Qiqeu8FkOr3vgIJp6btEajSoe5GB2YcVPfjPbLnu', N'đức', N'ductd2003@gmail.com', N'Hà nội', CAST(574000 AS Decimal(18, 0)), CAST(N'2025-03-23T22:27:38.887' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (14, 3, N'staff3', N'$2a$11$dBulhfZ2XGDm5Qiqeu8FkOr3vgIJp6btEajSoe5GB2YcVPfjPbLnu', N'staff 3', N'staff3@gmail.com', N'Hà Nội', NULL, CAST(N'2025-03-29T01:54:20.170' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (15, 3, N'staff4', N'$2a$11$dBulhfZ2XGDm5Qiqeu8FkOr3vgIJp6btEajSoe5GB2YcVPfjPbLnu', N'staff 4', N'staff4@gmail.com', N'hà Nội', NULL, CAST(N'2025-03-29T01:55:17.790' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [RoleID], [Username], [Password], [FullName], [Email], [Address], [TotalAmount], [CreatedAt]) VALUES (16, 3, N'staff5', N'$2a$11$dBulhfZ2XGDm5Qiqeu8FkOr3vgIJp6btEajSoe5GB2YcVPfjPbLnu', N'staff 5', N'staff5@gmail.com', N'Hà Nội', NULL, CAST(N'2025-03-29T01:55:50.600' AS DateTime))
+SET IDENTITY_INSERT [dbo].[Users] OFF
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__Categori__8517B2E07B0FBFB1]    Script Date: 3/29/2025 2:28:16 PM ******/
+ALTER TABLE [dbo].[Categories] ADD UNIQUE NONCLUSTERED 
+(
+	[CategoryName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__OrderSta__05E7698A5D7ECA26]    Script Date: 3/29/2025 2:28:16 PM ******/
+ALTER TABLE [dbo].[OrderStatuses] ADD UNIQUE NONCLUSTERED 
+(
+	[StatusName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__Roles__8A2B6160CD98008B]    Script Date: 3/29/2025 2:28:16 PM ******/
+ALTER TABLE [dbo].[Roles] ADD UNIQUE NONCLUSTERED 
+(
+	[RoleName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__Users__536C85E48384A31F]    Script Date: 3/29/2025 2:28:16 PM ******/
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [UQ__Users__536C85E48384A31F] UNIQUE NONCLUSTERED 
+(
+	[Username] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__Users__A9D105345709DF58]    Script Date: 3/29/2025 2:28:16 PM ******/
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [UQ__Users__A9D105345709DF58] UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Carts] ADD  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Orders] ADD  DEFAULT (getdate()) FOR [OrderDate]
+GO
+ALTER TABLE [dbo].[Orders] ADD  DEFAULT ((1)) FOR [StatusID]
+GO
+ALTER TABLE [dbo].[Products] ADD  DEFAULT ((0)) FOR [Stock]
+GO
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [DF__Users__CreatedAt__3C69FB99]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[Carts]  WITH CHECK ADD FOREIGN KEY([ProductID])
+REFERENCES [dbo].[Products] ([ProductID])
+GO
+ALTER TABLE [dbo].[Carts]  WITH CHECK ADD  CONSTRAINT [FK__Carts__UserID__571DF1D5] FOREIGN KEY([UserID])
+REFERENCES [dbo].[Users] ([UserID])
+GO
+ALTER TABLE [dbo].[Carts] CHECK CONSTRAINT [FK__Carts__UserID__571DF1D5]
+GO
+ALTER TABLE [dbo].[OrderDetails]  WITH CHECK ADD FOREIGN KEY([OrderID])
+REFERENCES [dbo].[Orders] ([OrderID])
+GO
+ALTER TABLE [dbo].[OrderDetails]  WITH CHECK ADD FOREIGN KEY([ProductID])
+REFERENCES [dbo].[Products] ([ProductID])
+GO
+ALTER TABLE [dbo].[Orders]  WITH CHECK ADD FOREIGN KEY([StatusID])
+REFERENCES [dbo].[OrderStatuses] ([StatusID])
+GO
+ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK__Orders__UserID__4CA06362] FOREIGN KEY([UserID])
+REFERENCES [dbo].[Users] ([UserID])
+GO
+ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK__Orders__UserID__4CA06362]
+GO
+ALTER TABLE [dbo].[Products]  WITH CHECK ADD FOREIGN KEY([CategoryID])
+REFERENCES [dbo].[Categories] ([CategoryID])
+GO
+ALTER TABLE [dbo].[Users]  WITH CHECK ADD  CONSTRAINT [FK__Users__RoleID__3D5E1FD2] FOREIGN KEY([RoleID])
+REFERENCES [dbo].[Roles] ([RoleID])
+GO
+ALTER TABLE [dbo].[Users] CHECK CONSTRAINT [FK__Users__RoleID__3D5E1FD2]
+GO
+ALTER TABLE [dbo].[Carts]  WITH CHECK ADD  CONSTRAINT [chk_quantity_carts] CHECK  (([Quantity]>(0)))
+GO
+ALTER TABLE [dbo].[Carts] CHECK CONSTRAINT [chk_quantity_carts]
+GO
+ALTER TABLE [dbo].[OrderDetails]  WITH CHECK ADD  CONSTRAINT [chk_quantity_orderdetails] CHECK  (([Quantity]>(0)))
+GO
+ALTER TABLE [dbo].[OrderDetails] CHECK CONSTRAINT [chk_quantity_orderdetails]
+GO
+ALTER TABLE [dbo].[Products]  WITH CHECK ADD  CONSTRAINT [chk_stock] CHECK  (([Stock]>=(0)))
+GO
+ALTER TABLE [dbo].[Products] CHECK CONSTRAINT [chk_stock]
+GO

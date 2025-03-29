@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PRN222_Final_Project.ModelDto;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Repositories.Interface;
 using PRN222_Final_Project.Services.Interface;
@@ -28,6 +29,19 @@ namespace PRN222_Final_Project.Services.Implementation
         public async Task<bool> IsDuplicateEmail(string email, string username)
         {
             return await _userRepository.IsDuplicateEmail(email, username);
+        }
+        public async Task<IEnumerable<TopCustomer>> GetTopUser(int top)
+        {
+            return await _userRepository.GetTopUser(top);
+        }
+        public async Task<int> GetTotalBuyer()
+        {
+            return await _userRepository.GetTotalBuyer();
+        }
+
+        public async Task<IEnumerable<StaffStatistic>> GetStaffStatistic(int top)
+        {
+            return await _userRepository.GetStaffStatistic(top);
         }
     }
 }

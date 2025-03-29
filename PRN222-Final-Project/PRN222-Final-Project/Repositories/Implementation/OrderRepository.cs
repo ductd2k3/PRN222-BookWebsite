@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PRN222_Final_Project.ModelDto;
 using PRN222_Final_Project.Models;
 using PRN222_Final_Project.Repositories.Interface;
 
@@ -35,6 +36,23 @@ namespace PRN222_Final_Project.Repositories.Implementation
                 .ToListAsync();
 
             return (items, totalItems);
+        }
+
+        public async Task<OrderStatistic> GetOrderStatisticAsync()
+        {
+            var TotalAmount = await _context.Orders
+                                        .Where(o => o.StatusId == 3)
+                                        .SumAsync(o => o.TotalAmount);
+            var TotalOrder = await _context.Orders.CountAsync();
+            var CompletedOrder = await _context.Orders.CountAsync(o => o.StatusId == 3);
+            var ProcessedOrder = await _context.Orders.CountAsync(o => o.StatusId == 1);
+            var AverageOrderValue = await _context.Orders.Where(o => o.StatusId == 3).AverageAsync(o => o.TotalAmount);
+            return new OrderStatistic { 
+                TotalOrder = TotalOrder,
+                CompletedOrder = CompletedOrder,
+                TotalAmount = TotalAmount,
+                AverageOrderValue = AverageOrderValue
+            };
         }
     }
 }
